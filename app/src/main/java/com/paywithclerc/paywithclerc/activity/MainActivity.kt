@@ -1,8 +1,10 @@
-package com.paywithclerc.paywithclerc
+package com.paywithclerc.paywithclerc.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.paywithclerc.paywithclerc.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -13,6 +15,8 @@ class MainActivity : AppCompatActivity() {
 
         startShoppingButton.setOnClickListener {
             Log.i("logtag", "Clicked!")
+            val intent = Intent(this, BarcodeScannerActivity::class.java)
+            startActivity(intent)
         }
     }
 }
