@@ -9,8 +9,10 @@ import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import java.io.IOException
 
-/** Barcode Detector Demo.  */
-class BarcodeScanningProcessor : VisionProcessorBase<List<FirebaseVisionBarcode>>() {
+/**
+ * Barcode scanner class initialized with a callback function that is called when barcodes are detected
+ */
+class BarcodeScanningProcessor(var barcodeDetected: (List<FirebaseVisionBarcode>) -> Unit) : VisionProcessorBase<List<FirebaseVisionBarcode>>() {
 
     // Note that if you know which format of barcode your app is dealing with, detection will be
     // faster to specify the supported barcode formats one by one, e.g.
@@ -24,6 +26,7 @@ class BarcodeScanningProcessor : VisionProcessorBase<List<FirebaseVisionBarcode>
     override fun stop() {
         try {
             detector.close()
+            Log.i(TAG, "Detector stopped")
         } catch (e: IOException) {
             Log.e(TAG, "Exception thrown while trying to close Barcode Detector: $e")
         }
@@ -39,6 +42,12 @@ class BarcodeScanningProcessor : VisionProcessorBase<List<FirebaseVisionBarcode>
         frameMetadata: FrameMetadata,
         graphicOverlay: GraphicOverlay
     ) {
+
+        // If any barcodes were found - pass them to the callback function
+        if (barcodes.count() > 0) {
+            barcodeDetected(barcodes)
+        }
+
         graphicOverlay.clear()
 
         originalCameraImage?.let {
@@ -50,6 +59,7 @@ class BarcodeScanningProcessor : VisionProcessorBase<List<FirebaseVisionBarcode>
             val barcodeGraphic = BarcodeGraphic(graphicOverlay, it)
             graphicOverlay.add(barcodeGraphic)
         }
+
         graphicOverlay.postInvalidate()
     }
 

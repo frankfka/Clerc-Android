@@ -8,7 +8,7 @@
         tools:context=".activity.BarcodeScannerActivity">
 
     <com.paywithclerc.paywithclerc.barcode.CameraSourcePreview
-            android:id="@+id/firePreview"
+            android:id="@+id/barcodeCameraPreview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -19,7 +19,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
         <com.paywithclerc.paywithclerc.barcode.GraphicOverlay
-                android:id="@+id/fireFaceOverlay"
+                android:id="@+id/barcodeCameraOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"

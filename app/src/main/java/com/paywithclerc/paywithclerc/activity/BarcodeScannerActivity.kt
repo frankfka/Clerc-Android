@@ -7,10 +7,6 @@ import com.paywithclerc.paywithclerc.R
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.CompoundButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.common.annotation.KeepName
@@ -20,14 +16,10 @@ import com.paywithclerc.paywithclerc.barcode.CameraSource
 import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import java.io.IOException
 
-/** Demo app showing the various features of ML Kit for Firebase. This class is used to
- * set up continuous frame processing on frames from a camera source.  */
 @KeepName
-class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback,
-    OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
+class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private var cameraSource: CameraSource? = null
-    private var selectedModel = BARCODE_DETECTION
 
     private val requiredPermissions: Array<String?>
         get() {
@@ -47,74 +39,43 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
-
         setContentView(R.layout.activity_barcode_scanner)
 
-        if (firePreview == null) {
+        // Check that the required views are set in XML
+        if (barcodeCameraPreview == null) {
             Log.d(TAG, "Preview is null")
         }
-
-        if (fireFaceOverlay == null) {
+        if (barcodeCameraOverlay == null) {
             Log.d(TAG, "graphicOverlay is null")
         }
 
+        // Either ask for permissions or start running the camera
         if (allPermissionsGranted()) {
-            createCameraSource(selectedModel)
+            createCameraSource()
         } else {
             getRuntimePermissions()
         }
     }
 
-    @Synchronized
-    override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
-        selectedModel = parent.getItemAtPosition(pos).toString()
-        Log.d(TAG, "Selected model: $selectedModel")
-        firePreview?.stop()
-        if (allPermissionsGranted()) {
-            createCameraSource(selectedModel)
-            startCameraSource()
-        } else {
-            getRuntimePermissions()
-        }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>) {
-        // Do nothing.
-    }
-
-    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        Log.d(TAG, "Set facing")
-
-        cameraSource?.let {
-            if (isChecked) {
-                it.setFacing(CameraSource.CAMERA_FACING_FRONT)
-            } else {
-                it.setFacing(CameraSource.CAMERA_FACING_BACK)
-            }
-        }
-        firePreview?.stop()
-        startCameraSource()
-    }
-
-    private fun createCameraSource(model: String) {
+    /**
+     * Initializes the camera & preview
+     */
+    private fun createCameraSource() {
         // If there's no existing cameraSource, create one.
         if (cameraSource == null) {
-            cameraSource = CameraSource(this, fireFaceOverlay)
+            cameraSource = CameraSource(this, barcodeCameraOverlay)
         }
 
         try {
-            when (model) {
-                BARCODE_DETECTION -> {
-                    Log.i(TAG, "Using Barcode Detector Processor")
-                    cameraSource?.setMachineLearningFrameProcessor(BarcodeScanningProcessor())
+            Log.i(TAG, "Using Barcode Detector Processor")
+            val barcodeProcessor = BarcodeScanningProcessor { barcodes ->
+                barcodes.forEach {
+                    Log.e(TAG, it.rawValue.toString())
                 }
-                else -> Log.e(TAG, "Unknown model: $model")
             }
+            cameraSource?.setMachineLearningFrameProcessor(barcodeProcessor)
         } catch (e: FirebaseMLException) {
-            Log.e(TAG, "can not create camera source: $model")
+            Log.e(TAG, "Cannot create camera source")
         }
     }
 
@@ -126,13 +87,13 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
     private fun startCameraSource() {
         cameraSource?.let {
             try {
-                if (firePreview == null) {
+                if (barcodeCameraPreview == null) {
                     Log.d(TAG, "resume: Preview is null")
                 }
-                if (fireFaceOverlay == null) {
+                if (barcodeCameraOverlay == null) {
                     Log.d(TAG, "resume: graphOverlay is null")
                 }
-                firePreview?.start(cameraSource, fireFaceOverlay)
+                barcodeCameraPreview?.start(cameraSource, barcodeCameraOverlay)
             } catch (e: IOException) {
                 Log.e(TAG, "Unable to start camera source.", e)
                 cameraSource?.release()
@@ -150,7 +111,7 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
     /** Stops the camera.  */
     override fun onPause() {
         super.onPause()
-        firePreview?.stop()
+        barcodeCameraPreview?.stop()
     }
 
     public override fun onDestroy() {
@@ -158,6 +119,9 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
         cameraSource?.release()
     }
 
+    /**
+     * Permissions Methods
+     */
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (!isPermissionGranted(this, permission!!)) {
@@ -181,21 +145,23 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
         }
     }
 
+    // Called when user answers a permissions request
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
         Log.i(TAG, "Permission granted!")
+        // Create the camera source if permissions are granted
         if (allPermissionsGranted()) {
-            createCameraSource(selectedModel)
+            createCameraSource()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    // Static variables
     companion object {
-        private const val BARCODE_DETECTION = "Barcode Detection"
-        private const val TAG = "LivePreviewActivity"
+        private const val TAG = "BarcodeScannerActivity"
         private const val PERMISSION_REQUESTS = 1
 
         private fun isPermissionGranted(context: Context, permission: String): Boolean {
