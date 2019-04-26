@@ -7,10 +7,23 @@
         android:layout_height="match_parent"
         tools:context=".activity.BarcodeScannerActivity">
 
+    <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loadingAnimation"
+            android:indeterminate="true"
+            app:layout_constraintEnd_toEndOf="@+id/barcodeCameraPreview"
+            app:layout_constraintStart_toStartOf="@+id/barcodeCameraPreview"
+            app:layout_constraintBottom_toBottomOf="@+id/barcodeCameraPreview"
+            app:layout_constraintTop_toTopOf="@+id/barcodeCameraPreview"
+            android:indeterminateTint="@color/colorAccent"
+            android:elevation="8sp"/>
+
     <com.paywithclerc.paywithclerc.barcode.CameraSourcePreview
             android:id="@+id/barcodeCameraPreview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             app:layout_constraintTop_toTopOf="parent"

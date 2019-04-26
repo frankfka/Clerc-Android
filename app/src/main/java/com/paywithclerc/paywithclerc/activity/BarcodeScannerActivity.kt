@@ -2,7 +2,6 @@ package com.paywithclerc.paywithclerc.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.paywithclerc.paywithclerc.R
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -15,6 +14,14 @@ import com.paywithclerc.paywithclerc.barcode.BarcodeScanningProcessor
 import com.paywithclerc.paywithclerc.barcode.CameraSource
 import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import java.io.IOException
+import android.R.attr.left
+import android.R.attr.right
+import androidx.core.view.isVisible
+import com.paywithclerc.paywithclerc.R
+import com.paywithclerc.paywithclerc.model.Error
+import com.paywithclerc.paywithclerc.model.Store
+import com.paywithclerc.paywithclerc.service.FirestoreService
+
 
 @KeepName
 class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
@@ -41,13 +48,8 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_barcode_scanner)
 
-        // Check that the required views are set in XML
-        if (barcodeCameraPreview == null) {
-            Log.d(TAG, "Preview is null")
-        }
-        if (barcodeCameraOverlay == null) {
-            Log.d(TAG, "graphicOverlay is null")
-        }
+        // Hide loading animation
+        loadingAnimation.isVisible = false
 
         // Either ask for permissions or start running the camera
         if (allPermissionsGranted()) {
@@ -69,8 +71,14 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
         try {
             Log.i(TAG, "Using Barcode Detector Processor")
             val barcodeProcessor = BarcodeScanningProcessor { barcodes ->
-                barcodes.forEach {
-                    Log.e(TAG, it.rawValue.toString())
+                val firstBarcode = barcodes[0]
+                barcodeCameraPreview.stop()
+                // Show loading animation
+                loadingAnimation.isVisible = true
+                // Try to get from Firestore
+                FirestoreService.getStore(firstBarcode.rawValue.toString()) { success: Boolean, store: Store?, error: Error? ->
+                    Log.e(TAG, "$success, ${store?.name}, ${error?.message}")
+                    barcodeCameraPreview.start(cameraSource, barcodeCameraOverlay)
                 }
             }
             cameraSource?.setMachineLearningFrameProcessor(barcodeProcessor)

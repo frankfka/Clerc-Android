@@ -36,6 +36,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.8'
     // Barcode Scanning
     implementation 'com.google.firebase:firebase-ml-vision:19.0.3'
+    // Firestore
+    implementation 'com.google.firebase:firebase-firestore:18.2.0'
 
 }
 
