@@ -8,7 +8,7 @@
         tools:context=".activity.MainActivity"
         android:id="@+id/mainParentConstraintLayout">
 
-    <!--<com.paywithclerc.paywithclerc.view.LoadingHUD-->
+    <!--<com.paywithclerc.paywithclerc.view.hud.LoadingHUD-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->
     <!--app:text="Searching..."-->

@@ -10,7 +10,7 @@ import android.app.Activity
 import com.paywithclerc.paywithclerc.model.Error
 import com.paywithclerc.paywithclerc.model.Store
 import com.paywithclerc.paywithclerc.service.FirestoreService
-import com.paywithclerc.paywithclerc.view.LoadingHUD
+import com.paywithclerc.paywithclerc.view.hud.SuccessHUD
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,11 +21,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.paywithclerc.paywithclerc.R.layout.activity_main)
-
-        val loading = LoadingHUD(this)
-        loading.setHint("Searching...")
-        loading.placeInParent(mainParentConstraintLayout)
-        loading.show()
 
         startShoppingButton.setOnClickListener {
             Log.d(TAG, "Start shopping clicked")

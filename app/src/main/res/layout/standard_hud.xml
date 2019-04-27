@@ -6,7 +6,7 @@
                                                    android:layout_height="wrap_content"
                                                    android:background="@drawable/hud_background"
                                                    android:padding="16sp"
-                                                   android:id="@+id/loadingHUD">
+                                                   android:id="@+id/HUD">
 
     <LinearLayout
             android:orientation="vertical"
@@ -20,23 +20,22 @@
             android:baselineAligned="false"
             android:gravity="center">
 
-        <ProgressBar
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/loadingProgressBar"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/colorPrimary"/>
+        <ImageView
+                android:layout_width="64sp"
+                android:layout_height="64sp"
+                android:id="@+id/hudImage"
+                tools:src="@drawable/ic_error"
+                />
 
         <TextView
-                tools:text="Searching..."
+                tools:text="Example HUD Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/loadingText"
+                android:id="@+id/hudText"
                 android:textSize="@dimen/normalFontSize"
                 android:textColor="@color/colorTextDark"
                 android:gravity="center"
-                android:layout_marginTop="4sp"/>
+                android:layout_marginTop="8sp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
