@@ -133,11 +133,12 @@ public class CameraSourcePreview extends ViewGroup {
         int childWidth = layoutWidth;
         int childHeight = (int) (((float) layoutWidth / (float) width) * height);
 
+        // TODO - the following is commented out so that the preview is not auto-resized
         // If height is too tall using fit width, does fit height instead.
-        if (childHeight > layoutHeight) {
-            childHeight = layoutHeight;
-            childWidth = (int) (((float) layoutHeight / (float) height) * width);
-        }
+//        if (childHeight > layoutHeight) {
+//            childHeight = layoutHeight;
+//            childWidth = (int) (((float) layoutHeight / (float) height) * width);
+//        }
 
         for (int i = 0; i < getChildCount(); ++i) {
             getChildAt(i).layout(0, 0, childWidth, childHeight);

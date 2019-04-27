@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
@@ -14,20 +15,15 @@ import com.paywithclerc.paywithclerc.barcode.BarcodeScanningProcessor
 import com.paywithclerc.paywithclerc.barcode.CameraSource
 import kotlinx.android.synthetic.main.activity_barcode_scanner.*
 import java.io.IOException
-import android.R.attr.left
-import android.R.attr.right
-import androidx.core.view.isVisible
+import android.app.Activity
 import com.paywithclerc.paywithclerc.R
-import com.paywithclerc.paywithclerc.model.Error
-import com.paywithclerc.paywithclerc.model.Store
-import com.paywithclerc.paywithclerc.service.FirestoreService
+import com.paywithclerc.paywithclerc.constant.ActivityConstants
 
 
 @KeepName
 class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private var cameraSource: CameraSource? = null
-
     private val requiredPermissions: Array<String?>
         get() {
             return try {
@@ -44,12 +40,12 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
             }
         }
 
+    /**
+     * Initialization for the activity
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_barcode_scanner)
-
-        // Hide loading animation
-        loadingAnimation.isVisible = false
 
         // Either ask for permissions or start running the camera
         if (allPermissionsGranted()) {
@@ -60,30 +56,40 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
     }
 
     /**
+     * Ends the current activity with the scanned barcode if one was scanned
+     * If the returned barcode is nil, then an error has occurred
+     */
+    private fun returnToPreviousActivity(barcode: String?) {
+        val returnIntent = Intent()
+        returnIntent.putExtra(ActivityConstants.STORE_BARCODE_KEY, barcode)
+        setResult(Activity.RESULT_OK, returnIntent)
+        finish()
+    }
+
+    /**
      * Initializes the camera & preview
+     *
+     * This is the main function that deals with the logic of passing back
+     * the scanned barcodes to the previous activity
      */
     private fun createCameraSource() {
         // If there's no existing cameraSource, create one.
         if (cameraSource == null) {
             cameraSource = CameraSource(this, barcodeCameraOverlay)
         }
-
+        // Camera source should exist at this point
         try {
             Log.i(TAG, "Using Barcode Detector Processor")
             val barcodeProcessor = BarcodeScanningProcessor { barcodes ->
-                val firstBarcode = barcodes[0]
-                barcodeCameraPreview.stop()
-                // Show loading animation
-                loadingAnimation.isVisible = true
-                // Try to get from Firestore
-                FirestoreService.getStore(firstBarcode.rawValue.toString()) { success: Boolean, store: Store?, error: Error? ->
-                    Log.e(TAG, "$success, ${store?.name}, ${error?.message}")
-                    barcodeCameraPreview.start(cameraSource, barcodeCameraOverlay)
-                }
+                // Barcodes is never empty, we just retrieve the first barcode
+                // and pass it back to the calling activity
+                val barcode = barcodes[0].rawValue!! // TODO will this ever be null?
+                returnToPreviousActivity(barcode)
             }
             cameraSource?.setMachineLearningFrameProcessor(barcodeProcessor)
         } catch (e: FirebaseMLException) {
             Log.e(TAG, "Cannot create camera source")
+            returnToPreviousActivity(barcode = null)
         }
     }
 
@@ -106,13 +112,14 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
                 Log.e(TAG, "Unable to start camera source.", e)
                 cameraSource?.release()
                 cameraSource = null
+                returnToPreviousActivity(barcode = null)
             }
         }
     }
 
     public override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume")
+        Log.d(TAG, "Resuming barcode scanner activity")
         startCameraSource()
     }
 

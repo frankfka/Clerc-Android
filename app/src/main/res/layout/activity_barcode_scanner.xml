@@ -7,37 +7,41 @@
         android:layout_height="match_parent"
         tools:context=".activity.BarcodeScannerActivity">
 
-    <ProgressBar
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/loadingAnimation"
-            android:indeterminate="true"
-            app:layout_constraintEnd_toEndOf="@+id/barcodeCameraPreview"
-            app:layout_constraintStart_toStartOf="@+id/barcodeCameraPreview"
-            app:layout_constraintBottom_toBottomOf="@+id/barcodeCameraPreview"
-            app:layout_constraintTop_toTopOf="@+id/barcodeCameraPreview"
-            android:indeterminateTint="@color/colorAccent"
-            android:elevation="8sp"/>
-
     <com.paywithclerc.paywithclerc.barcode.CameraSourcePreview
             android:id="@+id/barcodeCameraPreview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/barcodeScanHint"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="0.0">
 
         <com.paywithclerc.paywithclerc.barcode.GraphicOverlay
                 android:id="@+id/barcodeCameraOverlay"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"/>
     </com.paywithclerc.paywithclerc.barcode.CameraSourcePreview>
+
+    <TextView
+            android:text="Place the barcode within the view. Scanning will occur automatically."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/barcodeScanHint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="@dimen/mediumFontSize"
+            android:textColor="@color/colorPrimary"
+            android:padding="16dp"
+            android:textAlignment="center"
+            app:layout_constraintHorizontal_bias="0.0"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

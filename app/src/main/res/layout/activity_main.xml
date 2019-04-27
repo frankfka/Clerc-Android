@@ -7,6 +7,15 @@
         android:layout_height="match_parent"
         tools:context=".activity.MainActivity">
 
+    <com.paywithclerc.paywithclerc.view.LoadingHUD
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="Searching..."
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
     <Button
             android:text="Start Shopping"
             android:layout_width="0dp"

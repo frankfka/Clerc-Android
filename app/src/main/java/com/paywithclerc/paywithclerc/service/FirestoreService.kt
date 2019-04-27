@@ -10,6 +10,11 @@ object FirestoreService {
 
     private const val TAG = "FirestoreService"
 
+    /**
+     * Retrieves a store with the given ID & calls the onResult callback when retrieved
+     *
+     * onResult -> (success, store object, error object)
+     */
     fun getStore(id: String, onResult: (Boolean, Store?, Error?) -> Unit) {
         val db = getFirestore()
         db.collection(FirestoreConstants.STORES_COL)
@@ -17,19 +22,26 @@ object FirestoreService {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    Log.e(TAG, "DocumentSnapshot data: ${document.data}")
-                    onResult(true, null, null)
+                    val docData = document.data!! // Data should exist if the doc exists
+                    val storeName = docData["name"] as String?
+                    // Check that the fields are actually retrievable
+                    if (storeName != null) {
+                        onResult(true, Store(id, storeName), null)
+                    } else {
+                        onResult(false, null, Error("Store $id found but was missing parameters"))
+                    }
                 } else {
-                    Log.e(TAG, "No such document")
-                    onResult(false, null, null)
+                    Log.e(TAG, "No such document was found")
+                    onResult(false, null, Error("No store found for id $id"))
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e(TAG, "get failed with ", exception)
-                onResult(false, null, null)
+                Log.e(TAG, "Document retrieval failed with $exception")
+                onResult(false, null, Error("$exception"))
             }
     }
 
+    // Gets a Firestore database instance
     private fun getFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
