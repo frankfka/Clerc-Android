@@ -10,6 +10,7 @@ import android.app.Activity
 import com.paywithclerc.paywithclerc.model.Error
 import com.paywithclerc.paywithclerc.model.Store
 import com.paywithclerc.paywithclerc.service.FirestoreService
+import com.paywithclerc.paywithclerc.view.LoadingHUD
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +21,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.paywithclerc.paywithclerc.R.layout.activity_main)
+
+        val loading = LoadingHUD(this)
+        loading.setHint("Searching...")
+        loading.placeInParent(mainParentConstraintLayout)
+        loading.show()
 
         startShoppingButton.setOnClickListener {
             Log.d(TAG, "Start shopping clicked")
@@ -55,9 +61,19 @@ class MainActivity : AppCompatActivity() {
      */
     private fun returnedFromScanningBarcode(barcode: String?) {
         if (barcode != null) {
+            // Start loading animation
+
             // Try to get from Firestore
             FirestoreService.getStore(barcode) { success: Boolean, store: Store?, error: Error? ->
-                Log.e(TAG, "$success, ${store?.id}, ${error?.message}")
+                // When done, dismiss loading
+
+                // Check that we have a success
+                if (success && store != null) {
+                    // Go to shopping screen
+                } else {
+                    Log.e(TAG, "Error while getting store from barcode $barcode, Error: ${error?.message}")
+                    // Show error HUD
+                }
             }
         } else {
             // An error occured while scanning
