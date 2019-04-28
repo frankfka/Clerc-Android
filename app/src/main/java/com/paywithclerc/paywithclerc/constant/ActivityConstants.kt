@@ -6,4 +6,7 @@ object ActivityConstants {
     const val STORE_BARCODE_INTENT = 0
     const val STORE_BARCODE_KEY = "STORE_BARCODE" // Key for the String extra
 
+    // Login
+    const val FIREBASE_LOGIN_INTENT = 0
+
 }
