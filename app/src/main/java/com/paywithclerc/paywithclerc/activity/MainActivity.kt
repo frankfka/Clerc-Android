@@ -10,6 +10,7 @@ import android.app.Activity
 import com.paywithclerc.paywithclerc.model.Error
 import com.paywithclerc.paywithclerc.model.Store
 import com.paywithclerc.paywithclerc.service.FirestoreService
+import com.paywithclerc.paywithclerc.service.ViewService
 import com.paywithclerc.paywithclerc.view.hud.SuccessHUD
 
 
@@ -57,22 +58,24 @@ class MainActivity : AppCompatActivity() {
     private fun returnedFromScanningBarcode(barcode: String?) {
         if (barcode != null) {
             // Start loading animation
-
+            val loadingHUD = ViewService.showLoadingHUD(this, mainParentConstraintLayout, "Searching for Store…")
             // Try to get from Firestore
             FirestoreService.getStore(barcode) { success: Boolean, store: Store?, error: Error? ->
                 // When done, dismiss loading
-
+                ViewService.dismissLoadingHUD(loadingHUD)
                 // Check that we have a success
                 if (success && store != null) {
                     // Go to shopping screen
                 } else {
                     Log.e(TAG, "Error while getting store from barcode $barcode, Error: ${error?.message}")
                     // Show error HUD
+                    ViewService.showErrorHUD(this, mainParentConstraintLayout, "No store found. Please try again.")
                 }
             }
         } else {
             // An error occured while scanning
-            // TODO show error HUD
+            Log.e(TAG, "Returned from scanning barcode but the barcode is somehow null")
+            ViewService.showErrorHUD(this, mainParentConstraintLayout)
         }
     }
 
