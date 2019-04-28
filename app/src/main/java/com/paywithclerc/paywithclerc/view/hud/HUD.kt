@@ -3,6 +3,7 @@ package com.paywithclerc.paywithclerc.view.hud
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.paywithclerc.paywithclerc.R
@@ -33,14 +34,20 @@ abstract class HUD: ConstraintLayout {
 
     /**
      * Shows the HUD in the parent layout
+     * milliseconds - the # of milliseconds to show for
      */
-    open fun placeInParent(parentLayout: ConstraintLayout) {
+    open fun placeInParent(parentLayout: ConstraintLayout, milliseconds: Long = 0L) {
         val inflatedView = View.inflate(context, R.layout.standard_hud, this)
         // Update text & image
         updateText()
         updateImage()
         // Layout the view in the parent
         layout(parentLayout, inflatedView)
+        // If the # of milliseconds is specified, remove the view after the given time
+        if (milliseconds != 0L) {
+            // TODO - fade out animation
+            inflatedView.postDelayed({ removeFromParent() }, milliseconds)
+        }
     }
 
     /**

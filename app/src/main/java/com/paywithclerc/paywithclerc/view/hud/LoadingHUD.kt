@@ -11,7 +11,7 @@ class LoadingHUD(context: Context, text:String) : HUD(context, text) {
     /**
      * Shows the loading HUD in the parent layout
      */
-    override fun placeInParent(parentLayout: ConstraintLayout) {
+    override fun placeInParent(parentLayout: ConstraintLayout, milliseconds: Long) {
         val inflatedView = View.inflate(context, R.layout.loading_hud, this)
         // Update text
         updateText()

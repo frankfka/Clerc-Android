@@ -11,9 +11,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants
 import com.paywithclerc.paywithclerc.service.FirebaseAuthService
+import com.paywithclerc.paywithclerc.service.FirestoreService
+import com.paywithclerc.paywithclerc.service.ViewService
+import com.paywithclerc.paywithclerc.view.hud.ErrorHUD
 import kotlinx.android.synthetic.main.activity_login.*
-
-
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,11 +45,26 @@ class LoginActivity : AppCompatActivity() {
             // Get response from data
             val authResponse = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
-                // Successfully signed in - go to home screen
-                var intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                // Try to initialize user with Firestore information
+                val currentUser = FirebaseAuthService.getCurrentUser()!!
+                FirestoreService.loadCustomer(currentUser) { success, customer, error ->
+                    if (success && customer != null) {
+                        Log.i(TAG, "Customer ${currentUser.uid} successfully loaded with Stripe info")
+                        // Customer successfully loaded - go to home screen
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    } else {
+                        // Failed :(
+                    }
+                }
             } else {
+                if (authResponse == null) {
+                    // User cancelled - do nothing
+                } else {
+                    // An error occured
+                    val errorHUD = ErrorHUD(this, "Something went wrong. Please try again.")
+                    errorHUD.placeInParent(loginParentConstraintLayout, 3000)
+                }
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.

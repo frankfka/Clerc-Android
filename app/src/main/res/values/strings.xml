@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Clerc</string>
+    <!--View Strings-->
+    <string name="default_error">Something went wrong. Please try again.</string>
 </resources>
