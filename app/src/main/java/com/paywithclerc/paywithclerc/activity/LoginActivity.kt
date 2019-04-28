@@ -12,6 +12,7 @@ import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants
 import com.paywithclerc.paywithclerc.service.FirebaseAuthService
 import com.paywithclerc.paywithclerc.service.FirestoreService
+import com.paywithclerc.paywithclerc.service.NetworkService
 import com.paywithclerc.paywithclerc.service.ViewService
 import com.paywithclerc.paywithclerc.view.hud.ErrorHUD
 import kotlinx.android.synthetic.main.activity_login.*
@@ -37,6 +38,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    // Remove all pending requests if the activity gets destroyed
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkService.getInstance(this).removeFromRequestQueue(TAG)
+    }
+
+    /**
+     * Called on return of an activity
+     *
+     * FIREBASE_LOGIN_INTENT: returns from Firebase Auth UI. Will attempt to initialize the customer from
+     *                          Firestore or hit our backend for Stripe information
+     *
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -47,28 +61,26 @@ class LoginActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 // Try to initialize user with Firestore information
                 val currentUser = FirebaseAuthService.getCurrentUser()!!
-                FirestoreService.loadCustomer(currentUser) { success, customer, error ->
+                FirestoreService.loadCustomer(currentUser, this, TAG) { success, customer, error ->
                     if (success && customer != null) {
                         Log.i(TAG, "Customer ${currentUser.uid} successfully loaded with Stripe info")
                         // Customer successfully loaded - go to home screen
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     } else {
-                        // Failed :(
+                        // Failed because the customer could not be loaded from firestore/with stripe
+                        Log.e(TAG, "Customer logged in, but Stripe initialization failed with error: ${error?.message}")
+                        ViewService.showErrorHUD(this, loginParentConstraintLayout)
                     }
                 }
             } else {
                 if (authResponse == null) {
                     // User cancelled - do nothing
                 } else {
-                    // An error occured
-                    val errorHUD = ErrorHUD(this, "Something went wrong. Please try again.")
-                    errorHUD.placeInParent(loginParentConstraintLayout, 3000)
+                    // An error occured with Firebase Auth
+                    Log.e(TAG, "Firebase Auth failed. Code: ${authResponse.error?.errorCode}")
+                    ViewService.showErrorHUD(this, loginParentConstraintLayout)
                 }
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
             }
         }
     }

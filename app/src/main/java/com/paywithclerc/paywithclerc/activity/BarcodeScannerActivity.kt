@@ -40,6 +40,8 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
             }
         }
 
+    // TODO DEAL WITH DENIED PERMISSIONS
+
     /**
      * Initialization for the activity
      */

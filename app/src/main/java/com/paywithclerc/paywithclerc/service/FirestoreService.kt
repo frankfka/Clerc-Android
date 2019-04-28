@@ -1,5 +1,6 @@
 package com.paywithclerc.paywithclerc.service
 
+import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,20 +18,19 @@ object FirestoreService {
      *
      * onResult -> (success, customer object, error object)
      */
-    fun loadCustomer(user: FirebaseUser, onResult: (Boolean, Customer?, Error?) -> Unit) {
+    fun loadCustomer(user: FirebaseUser, context: Context, networkTag: String? = null, onResult: (Boolean, Customer?, Error?) -> Unit) {
         val db = getFirestore()
         // Try to get the document for the user
-        db.collection(FirestoreConstants.CUSTOMERS_COL)
-            .document(user.uid)
-            .get()
+        val userDocRef = db.collection(FirestoreConstants.CUSTOMERS_COL).document(user.uid)
+        userDocRef.get()
             .addOnSuccessListener { document ->
-                if (document != null) {
+                if (document != null && document.data != null) {
                     // User exists - get their data
-                    val docData = document.data!! // Data should exist if the doc exists
-                    val stripeID = docData["stripeId"] as String?
+                    val docData = document.data!!
+                    val stripeId = docData["stripeId"] as String?
                     // stripeID should always exist, but we check just in case
-                    if (stripeID != null) {
-                        val customer = Customer(user.uid, stripeID, user.displayName, user.email)
+                    if (stripeId != null) {
+                        val customer = Customer(user.uid, stripeId, user.displayName, user.email)
                         onResult(true, customer, null)
                     } else {
                         // Something is really wrong - user doc exists but stripeID doesn't
@@ -40,21 +40,30 @@ object FirestoreService {
                 } else {
                     // User does not exist - create Stripe customer first
                     Log.i(TAG, "Customer ${user.uid} does not exist in Firebase, creating Stripe customer")
-//                    StripeService.shared.createCustomer() { (success, stripeId) in
-//                    if success && stripeId != nil {
-//                        // Stripe customer created, save to Firebase
-//
-//                        // We just save Stripe ID for now (safer) - do we want to save name/email?
-//                        let userData: [String: Any] = ["stripeId": stripeId!]
-//                        userDocRef.setData(userData) { error in
-//                                if error == nil {
-//                                    // Successful - return customer object
-//                                    completion(true, Customer(firebaseID: user.uid, stripeID: stripeId!, name: user.displayName, email: user.email))
-//                                } else {
-//                                    // Unsuccessful
-//                                    completion(false, nil)
-//                                }
-//                        }
+                    BackendService.createCustomer(context, networkTag) { success, stripeId, error ->
+                        // Check the status of create customer call
+                        if (success && stripeId != null) {
+                            // Stripe ID created successfully - save to firebase
+                            val userData = HashMap<String, Any>()
+                            userData["stripeId"] = stripeId
+                            userDocRef.set(userData)
+                                .addOnSuccessListener {
+                                    // Successfully written to Firebase
+                                    Log.i(TAG, "Customer successfully created with new stripe ID")
+                                    val customer = Customer(user.uid, stripeId, user.displayName, user.email)
+                                    onResult(true, customer, null)
+                                }
+                                .addOnFailureListener {
+                                    // Adding stripe ID to firestore failed
+                                    Log.e(TAG, "Was not able to add new stripe ID to the Firestore Customer. Error: ${error?.message}")
+                                    onResult(false, null, error)
+                                }
+                        } else {
+                            // Backend call failed
+                            Log.e(TAG, "Call to our backend to create new customer failed.")
+                            onResult(false, null, error)
+                        }
+                    }
                 }
             }
             .addOnFailureListener { exception ->
@@ -75,8 +84,8 @@ object FirestoreService {
             .document(id)
             .get()
             .addOnSuccessListener { document ->
-                if (document != null) {
-                    val docData = document.data!! // Data should exist if the doc exists
+                if (document != null && document.data != null) {
+                    val docData = document.data!!
                     val storeName = docData["name"] as String?
                     // Check that the fields are actually retrievable
                     if (storeName != null) {
