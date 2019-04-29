@@ -16,6 +16,7 @@ import com.paywithclerc.paywithclerc.activity.MainActivity
 import com.paywithclerc.paywithclerc.constant.ViewConstants
 import com.paywithclerc.paywithclerc.view.hud.ErrorHUD
 import com.paywithclerc.paywithclerc.view.hud.LoadingHUD
+import com.paywithclerc.paywithclerc.view.hud.SuccessHUD
 import java.text.NumberFormat
 
 object ViewService {
@@ -27,6 +28,15 @@ object ViewService {
         val errorHint = message ?: context.resources.getString(R.string.default_error)
         val errorHUD = ErrorHUD(context, errorHint)
         errorHUD.placeInParent(parentConstraintLayout, ViewConstants.HUD_SHOW_TIME)
+    }
+
+    /**
+     * Show success HUD
+     */
+    fun showSuccessHUD(context: Context, parentConstraintLayout: ConstraintLayout, message: String? = null) {
+        val successHint = message ?: context.resources.getString(R.string.default_success)
+        val successHUD = SuccessHUD(context, successHint)
+        successHUD.placeInParent(parentConstraintLayout, ViewConstants.HUD_SHOW_TIME)
     }
 
     /**

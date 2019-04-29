@@ -6,7 +6,8 @@
               android:layout_height="wrap_content"
               android:gravity="center_vertical"
               android:paddingTop="8sp"
-              android:paddingBottom="8sp">
+              android:paddingBottom="8sp"
+              android:background="@drawable/bottom_border_white_background">
 
     <LinearLayout
             android:orientation="vertical"

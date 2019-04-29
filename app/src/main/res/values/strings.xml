@@ -2,6 +2,7 @@
     <string name="app_name">Clerc</string>
     <!--Default View Strings-->
     <string name="default_error">Something went wrong. Please try again.</string>
+    <string name="default_success">Success</string>
     <string name="default_loading">Loading…</string>
     <!--Shopping Activity-->
     <string name="shopping_activity_cancel_button">Cancel</string>

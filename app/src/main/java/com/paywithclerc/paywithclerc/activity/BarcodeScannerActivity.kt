@@ -63,7 +63,7 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
      */
     private fun returnToPreviousActivity(barcode: String?) {
         val returnIntent = Intent()
-        returnIntent.putExtra(ActivityConstants.STORE_BARCODE_KEY, barcode)
+        returnIntent.putExtra(ActivityConstants.BARCODE_EXTRA_KEY, barcode)
         setResult(Activity.RESULT_OK, returnIntent)
         finish()
     }

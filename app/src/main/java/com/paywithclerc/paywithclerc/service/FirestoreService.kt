@@ -7,7 +7,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.paywithclerc.paywithclerc.constant.FirestoreConstants
 import com.paywithclerc.paywithclerc.model.Customer
 import com.paywithclerc.paywithclerc.model.Error
+import com.paywithclerc.paywithclerc.model.Product
 import com.paywithclerc.paywithclerc.model.Store
+import kotlin.math.cos
 
 object FirestoreService {
 
@@ -94,12 +96,48 @@ object FirestoreService {
                         onResult(false, null, Error("Store $id found but was missing parameters"))
                     }
                 } else {
-                    Log.e(TAG, "No such document was found")
+                    Log.e(TAG, "Store document $id was not found")
                     onResult(false, null, Error("No store found for id $id"))
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Store document retrieval failed with $exception")
+                onResult(false, null, Error("$exception"))
+            }
+    }
+
+    /**
+     * Retrieves a product with the given ID for the store with the given ID. Calls onResult when done
+     *
+     * onResult -> (success, product object, error object)
+     */
+    fun getProduct(productId: String, storeId: String, onResult: (Boolean, Product?, Error?) -> Unit) {
+        val db = getFirestore()
+        db.collection(FirestoreConstants.STORES_COL)
+            .document(storeId)
+            .collection(FirestoreConstants.PRODUCTS_COL)
+            .document(productId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.data != null) {
+                    val docData = document.data!!
+                    val productName = docData["name"] as String?
+                    val cost = docData["cost"] as Double?
+                    val currency = docData["currency"] as String?
+                    if (productName != null && cost != null && currency != null) {
+                        val scannedProduct = Product(productId, productName, cost, currency)
+                        onResult(true, scannedProduct, null)
+                    } else {
+                        Log.e(TAG, "Product document $productId found for store $storeId but was missing fields")
+                        onResult(false, null, Error("Product document $productId found for store $storeId but was missing fields"))
+                    }
+                } else {
+                    Log.e(TAG, "Product document $productId not found under store $storeId")
+                    onResult(false, null, Error("Product document $productId not found under store $storeId"))
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Product document retrieval failed with $exception")
                 onResult(false, null, Error("$exception"))
             }
     }

@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         startShoppingButton.setOnClickListener {
-            Log.d(TAG, "Start shopping clicked")
             val intent = Intent(this, BarcodeScannerActivity::class.java)
             startActivityForResult(intent, ActivityConstants.STORE_BARCODE_INTENT)
         }
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == ActivityConstants.STORE_BARCODE_INTENT) {
             // Check for the result
             if (resultCode == Activity.RESULT_OK) {
-                val barcode = data!!.getStringExtra(ActivityConstants.STORE_BARCODE_KEY)
+                val barcode = data!!.getStringExtra(ActivityConstants.BARCODE_EXTRA_KEY)
                 returnedFromScanningBarcode(barcode)
             }
             if (resultCode == Activity.RESULT_CANCELED) {
