@@ -7,6 +7,7 @@ import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ViewConstants
 import com.paywithclerc.paywithclerc.view.hud.ErrorHUD
 import com.paywithclerc.paywithclerc.view.hud.LoadingHUD
+import java.text.NumberFormat
 
 object ViewService {
 
@@ -35,6 +36,13 @@ object ViewService {
      */
     fun dismissLoadingHUD(loadingHUD: LoadingHUD) {
         loadingHUD.removeFromParent()
+    }
+
+    /**
+     * Gets a formatted string for the given cost
+     */
+    fun getFormattedCost(cost: Double): String {
+        return NumberFormat.getCurrencyInstance().format(cost)
     }
 
 }

@@ -20,8 +20,6 @@ class LaunchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
-        // Hide the app bar
-        supportActionBar?.hide()
     }
 
     override fun onDestroy() {

@@ -48,8 +48,6 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_barcode_scanner)
-        // Hide the app bar
-        supportActionBar?.hide()
 
         // Either ask for permissions or start running the camera
         if (allPermissionsGranted()) {

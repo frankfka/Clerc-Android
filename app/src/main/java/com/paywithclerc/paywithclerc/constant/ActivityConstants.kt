@@ -9,4 +9,7 @@ object ActivityConstants {
     // Login
     const val FIREBASE_LOGIN_INTENT = 0
 
+    // Shopping
+    const val STORE_OBJ_KEY = "STORE_OBJ" // Key for the Store extra
+
 }

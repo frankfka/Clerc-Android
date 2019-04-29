@@ -66,6 +66,9 @@ class MainActivity : AppCompatActivity() {
                 // Check that we have a success
                 if (success && store != null) {
                     // Go to shopping screen
+                    val intent = Intent(this, ShoppingActivity::class.java)
+                    intent.putExtra(ActivityConstants.STORE_OBJ_KEY, store)
+                    startActivity(intent)
                 } else {
                     Log.e(TAG, "Error while getting store from barcode $barcode, Error: ${error?.message}")
                     // Show error HUD

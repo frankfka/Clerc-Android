@@ -20,6 +20,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
@@ -43,8 +46,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.2.1'
     // HTTP
     implementation 'com.android.volley:volley:1.1.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
 
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
