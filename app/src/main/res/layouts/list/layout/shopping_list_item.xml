@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:paddingTop="8sp"
+              android:paddingBottom="8sp">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                tools:text="2 Pack Hummus"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:id="@+id/shoppingListItemNameLabel"
+                android:layout_weight="1"
+                android:textColor="@color/colorTextDark"
+                android:textSize="@dimen/normalFontSize"/>
+
+        <TextView
+                tools:text="$6.99 x 1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/shoppingListItemQuantityLabel"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/smallFontSize"/>
+    </LinearLayout>
+
+    <TextView
+            tools:text="$6.99"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/shoppingListItemCostLabel"
+            android:gravity="center_vertical|end"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/mediumFontSize"
+            android:layout_weight="1"/>
+</LinearLayout>

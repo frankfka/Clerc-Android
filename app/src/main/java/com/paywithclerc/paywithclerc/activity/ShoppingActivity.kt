@@ -1,5 +1,6 @@
 package com.paywithclerc.paywithclerc.activity
 
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -28,7 +29,15 @@ class ShoppingActivity : AppCompatActivity() {
             // Initialize UI with store information
             shoppingStoreTitle.text = store!!.name
             // Set up on-click listeners
-
+            shoppingCancelButton.setOnClickListener {
+                exitShopping()
+            }
+            shoppingCheckoutButton.setOnClickListener {
+                Log.e(TAG, "Checkout clicked")
+            }
+            shoppingClearCartButton.setOnClickListener {
+                Log.e(TAG, "Clear cart")
+            }
             // Run update UI once
             updateUI()
         } else {
@@ -36,6 +45,22 @@ class ShoppingActivity : AppCompatActivity() {
             // Finish the activity so we don't run into any unknown flows
             finish()
         }
+    }
+
+    /**
+     * Override so that we can show a confirmation dialog
+     */
+    override fun onBackPressed() {
+        exitShopping()
+    }
+
+    // Shows confirmation dialog
+    private fun exitShopping() {
+        ViewService.showConfirmDialog(this, "Exit Shopping", "Are you sure you want to stop shopping?",
+            confirmClickListener = DialogInterface.OnClickListener { dialog, which ->
+                // Navigate back
+                super.onBackPressed()
+            })
     }
 
     // Update UI based on state

@@ -9,7 +9,7 @@ object UtilityService {
      */
     fun getTotalCost(items: List<Product>, quantities: List<Int>) : Double {
         var totalPrice = 0.0
-        for (index in 0 until items.count()) {
+        for (index in 0 until items.size) {
             totalPrice += items[index].cost * quantities[index]
         }
         return totalPrice

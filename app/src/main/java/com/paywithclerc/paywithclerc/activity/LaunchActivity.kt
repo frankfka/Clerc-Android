@@ -8,8 +8,6 @@ import android.content.Intent
 import android.util.Log
 import com.paywithclerc.paywithclerc.service.FirestoreService
 import com.paywithclerc.paywithclerc.service.NetworkService
-import com.paywithclerc.paywithclerc.service.ViewService
-import kotlinx.android.synthetic.main.activity_launch.*
 
 /**
  * This activity contains the splash screen & will redirect users

@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Clerc</string>
-    <!--View Strings-->
+    <!--Default View Strings-->
     <string name="default_error">Something went wrong. Please try again.</string>
     <string name="default_loading">Loading…</string>
+    <!--Shopping Activity-->
+    <string name="shopping_activity_cancel_button">Cancel</string>
+    <string name="shopping_activity_total_label">Total:</string>
+    <string name="shopping_activity_cart_label">CART</string>
+    <string name="shopping_activity_clear_cart_button">CLEAR</string>
+    <string name="shopping_activity_checkout_button">Checkout</string>
 </resources>

@@ -13,7 +13,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            app:srcCompat="@drawable/logo"
             android:id="@+id/shoppingAddItemFAB"
             android:layout_marginEnd="32dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -27,11 +26,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/bottom_border"
+            android:background="@drawable/bottom_border_white_background"
             android:id="@+id/shoppingTopBarConstraintLayout">
 
         <TextView
-                android:text="Cancel"
+                android:text="@string/shopping_activity_cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/shoppingCancelButton"
@@ -43,7 +42,7 @@
                 android:textColor="@color/colorPrimary"/>
 
         <TextView
-                android:text="Checkout"
+                android:text="@string/shopping_activity_checkout_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/shoppingCheckoutButton"
@@ -103,7 +102,7 @@
                 android:id="@+id/shoppingNestedConstraintLayout">
 
             <TextView
-                    android:text="Total:"
+                    android:text="@string/shopping_activity_total_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/shoppingTotalAmountLabel"
@@ -117,7 +116,7 @@
                     android:textColor="@color/colorTextLight"/>
 
             <TextView
-                    android:text="CART"
+                    android:text="@string/shopping_activity_cart_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/shoppingCartLabel"
@@ -142,7 +141,7 @@
                     android:textColor="@color/colorTextDark"/>
 
             <TextView
-                    android:text="CLEAR"
+                    android:text="@string/shopping_activity_clear_cart_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/shoppingClearCartButton"

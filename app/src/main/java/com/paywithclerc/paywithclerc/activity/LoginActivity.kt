@@ -7,14 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.FirebaseAuth
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants
 import com.paywithclerc.paywithclerc.service.FirebaseAuthService
 import com.paywithclerc.paywithclerc.service.FirestoreService
 import com.paywithclerc.paywithclerc.service.NetworkService
 import com.paywithclerc.paywithclerc.service.ViewService
-import com.paywithclerc.paywithclerc.view.hud.ErrorHUD
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {

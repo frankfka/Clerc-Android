@@ -11,7 +11,7 @@ import com.paywithclerc.paywithclerc.model.Error
 import com.paywithclerc.paywithclerc.model.Store
 import com.paywithclerc.paywithclerc.service.FirestoreService
 import com.paywithclerc.paywithclerc.service.ViewService
-import com.paywithclerc.paywithclerc.view.hud.SuccessHUD
+import com.paywithclerc.paywithclerc.R
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.paywithclerc.paywithclerc.R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
         startShoppingButton.setOnClickListener {
             Log.d(TAG, "Start shopping clicked")
