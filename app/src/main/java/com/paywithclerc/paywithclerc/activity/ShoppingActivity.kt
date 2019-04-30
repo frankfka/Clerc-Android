@@ -34,31 +34,7 @@ class ShoppingActivity : AppCompatActivity() {
         val scannedStore = intent.getParcelableExtra<Store>(ActivityConstants.STORE_OBJ_KEY)
         if (scannedStore != null) {
             store = scannedStore
-            // Initialize UI with store information
-            shoppingStoreTitle.text = store!!.name
-            // Initialize the RecyclerView
-            itemListAdapter = ItemListAdapter(items, quantities)
-            shoppingItemsRecycler.apply {
-                layoutManager = LinearLayoutManager(this@ShoppingActivity)
-                adapter = itemListAdapter
-            }
-            // Set up on-click listeners
-            shoppingCancelButton.setOnClickListener {
-                exitShopping()
-            }
-            shoppingCheckoutButton.setOnClickListener {
-                Log.e(TAG, "Checkout clicked")
-            }
-            shoppingClearCartButton.setOnClickListener {
-                Log.e(TAG, "Clear cart")
-            }
-            shoppingAddItemFAB.setOnClickListener {
-                // When add item is clicked, transition to the scanner view
-                val intent = Intent(this, BarcodeScannerActivity::class.java)
-                startActivityForResult(intent, ActivityConstants.SHOPPING_BARCODE_INTENT)
-            }
-            // Run update UI once
-            updateUI()
+            initializeUI()
         } else {
             Log.e(TAG, "No store item was passed to this activity")
             // Finish the activity so we don't run into any unknown flows
@@ -144,6 +120,60 @@ class ShoppingActivity : AppCompatActivity() {
                 // Navigate back
                 super.onBackPressed()
             })
+    }
+
+    // Initializes all the UI elements
+    private fun initializeUI() {
+        // Initialize UI with store information
+        shoppingStoreTitle.text = store!!.name
+        // Initialize the RecyclerView
+        itemListAdapter = ItemListAdapter(items, quantities) { product ->
+            val productIndex = items.indexOf(product)
+            // Sanity check to make sure that returned product is actually in the cart
+            if (productIndex >= 0) {
+                // Display dialog to edit quantity
+                ViewService.showEditItemDialog(this, product, quantities[items.indexOf(product)]) { newQty ->
+                    if (newQty > 0) {
+                        // Changing the quantity
+                        quantities[productIndex] = newQty
+                    } else {
+                        // Remove the item
+                        quantities.removeAt(productIndex)
+                        items.removeAt(productIndex)
+                    }
+                    updateUI()
+                }
+            } else {
+                Log.e(TAG, "Clicked product is somehow not in the shopping cart")
+            }
+        }
+        shoppingItemsRecycler.apply {
+            layoutManager = LinearLayoutManager(this@ShoppingActivity)
+            adapter = itemListAdapter
+        }
+        // Set up on-click listeners
+        shoppingCancelButton.setOnClickListener {
+            exitShopping()
+        }
+        shoppingCheckoutButton.setOnClickListener {
+            Log.e(TAG, "Checkout clicked")
+            // Go to checkout screen
+        }
+        shoppingClearCartButton.setOnClickListener {
+            ViewService.showConfirmDialog(this, "Clear Cart", "Are you sure you want to clear the cart?",
+                confirmClickListener = DialogInterface.OnClickListener { _, _ ->
+                    items.clear()
+                    quantities.clear()
+                    updateUI()
+                })
+        }
+        shoppingAddItemFAB.setOnClickListener {
+            // When add item is clicked, transition to the scanner view
+            val intent = Intent(this, BarcodeScannerActivity::class.java)
+            startActivityForResult(intent, ActivityConstants.SHOPPING_BARCODE_INTENT)
+        }
+        // Run update UI once
+        updateUI()
     }
 
     // Update UI based on state

@@ -12,7 +12,8 @@ import com.paywithclerc.paywithclerc.service.ViewService
 /**
  * Our Adapter is used by the RecyclerView and is a subclass of the RecyclerView Adapter
  */
-class ItemListAdapter(val items: List<Product>, val quantities: List<Int>) : RecyclerView.Adapter<ItemListAdapter.ItemListViewHolder>() {
+class ItemListAdapter(private val items: List<Product>, private val quantities: List<Int>, private val onItemClick: (Product) -> (Unit))
+    : RecyclerView.Adapter<ItemListAdapter.ItemListViewHolder>() {
 
     /**
      * Subclass ViewHolder - our base view for each list item is just a simple view
@@ -45,6 +46,10 @@ class ItemListAdapter(val items: List<Product>, val quantities: List<Int>) : Rec
         itemNameLabel.text = product.name
         quantityLabel.text = "${ViewService.getFormattedCost(product.cost)} x $quantity"
         costLabel.text = ViewService.getFormattedCost(product.cost * quantity)
+        // Set listener for on-click
+        rootView.setOnClickListener {
+            onItemClick(product)
+        }
     }
 
     // Returns size of the dataset for recyclerview
