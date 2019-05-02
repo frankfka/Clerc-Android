@@ -9,10 +9,7 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants
-import com.paywithclerc.paywithclerc.service.FirebaseAuthService
-import com.paywithclerc.paywithclerc.service.FirestoreService
-import com.paywithclerc.paywithclerc.service.NetworkService
-import com.paywithclerc.paywithclerc.service.ViewService
+import com.paywithclerc.paywithclerc.service.*
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -62,9 +59,19 @@ class LoginActivity : AppCompatActivity() {
                 FirestoreService.loadCustomer(currentUser, this, TAG) { success, customer, error ->
                     if (success && customer != null) {
                         Log.i(TAG, "Customer ${currentUser.uid} successfully loaded with Stripe info")
-                        // Customer successfully loaded - go to home screen
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
+                        // Load the customer session
+                        SessionService.loadCustomerSession(customer, this, LaunchActivity.TAG) { sessionLoadSuccess, sessionLoadError ->
+                            if (sessionLoadSuccess) {
+                                // Customer successfully loaded - go to home screen
+                                Log.i(TAG, "Customer session loaded")
+                                startActivity(Intent(this, MainActivity::class.java))
+                                finish()
+                            } else {
+                                // Something went wrong, redirect back to login
+                                Log.e(TAG, "Initializing customer session failed with error ${sessionLoadError?.message}")
+                                ViewService.showErrorHUD(this, loginParentConstraintLayout)
+                            }
+                        }
                     } else {
                         // Failed because the customer could not be loaded from firestore/with stripe
                         Log.e(TAG, "Customer logged in, but Stripe initialization failed with error: ${error?.message}")
