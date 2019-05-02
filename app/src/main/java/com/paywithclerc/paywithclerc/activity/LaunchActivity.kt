@@ -6,6 +6,7 @@ import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.service.FirebaseAuthService
 import android.content.Intent
 import android.util.Log
+import com.paywithclerc.paywithclerc.model.Customer
 import com.paywithclerc.paywithclerc.service.FirestoreService
 import com.paywithclerc.paywithclerc.service.NetworkService
 
@@ -34,6 +35,8 @@ class LaunchActivity : AppCompatActivity() {
             FirestoreService.loadCustomer(currentUser, this, TAG) { success, customer, error ->
                 if (success && customer != null) {
                     Log.i(TAG, "Customer ${currentUser.uid} successfully loaded with Stripe info")
+                    // Initialize the current customer object
+                    Customer.current = customer
                     // Customer successfully loaded - go to home screen
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()

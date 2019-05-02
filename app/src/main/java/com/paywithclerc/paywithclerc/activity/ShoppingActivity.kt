@@ -16,7 +16,6 @@ import com.paywithclerc.paywithclerc.service.FirestoreService
 import com.paywithclerc.paywithclerc.service.UtilityService
 import com.paywithclerc.paywithclerc.service.ViewService
 import com.paywithclerc.paywithclerc.view.adapter.ItemListAdapter
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_shopping.*
 
 class ShoppingActivity : AppCompatActivity() {
@@ -158,6 +157,9 @@ class ShoppingActivity : AppCompatActivity() {
         shoppingCheckoutButton.setOnClickListener {
             Log.e(TAG, "Checkout clicked")
             // Go to checkout screen
+            val intent = Intent(this, CheckoutActivity::class.java)
+            startActivity(intent)
+            // TODO pass in items/total, etc.
         }
         shoppingClearCartButton.setOnClickListener {
             ViewService.showConfirmDialog(this, "Clear Cart", "Are you sure you want to clear the cart?",

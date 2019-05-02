@@ -69,23 +69,22 @@ object BackendService {
 
             if (success && jwt != null) {
                 // JWT retrieval success, we can now get an ephemeral key
-                val createKeyParams = hashMapOf("api_version" to apiVersion,
-                    "token" to "asdfdasf",
-                    "customer_id" to currentCustomer.stripeID)
+                val createKeyParams = hashMapOf("stripe_version" to apiVersion,
+                                                "token" to jwt.token,
+                                                "customer_id" to currentCustomer.stripeID)
                 // POST the request to our backend server
                 val createEphemeralKeyRequest = JsonObjectRequest(Request.Method.POST,
                     BackendConstants.CREATE_EPH_KEY_URL,
                     JSONObject(createKeyParams),
                     Response.Listener { response ->
-                        // TODO remove me after testing
+                        // Stripe SDK just wants a raw string
                         val rawString = response.toString()
-                        Log.e(TAG, rawString)
                         onResult(true, rawString, null)
                     },
-                    Response.ErrorListener { error ->
+                    Response.ErrorListener { networkError ->
                         // Error from backend
                         Log.e(TAG, "Backend network call errored while creating ephemeral key")
-                        onResult(false, null, Error("${error.networkResponse.data}"))
+                        onResult(false, null, Error("${networkError.message}"))
                     })
                 // Add the request to the network queue
                 networkService.addToRequestQueue(createEphemeralKeyRequest, requestTag)
@@ -123,8 +122,6 @@ object BackendService {
             BackendConstants.JWT_URL,
             JSONObject(getJWTParams),
             Response.Listener { response ->
-                // TODO remove me after testing
-                Log.e(TAG, response.toString())
                 // Check that backend returned properly
                 if (!response.isNull("token")) {
                     // Success - call the callback
