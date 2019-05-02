@@ -20,6 +20,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".activity.CheckoutActivity">
+        </activity>
         <activity android:name=".activity.ShoppingActivity">
         </activity>
         <activity

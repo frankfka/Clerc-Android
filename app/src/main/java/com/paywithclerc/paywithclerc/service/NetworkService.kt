@@ -28,8 +28,11 @@ class NetworkService constructor(context: Context) {
         Volley.newRequestQueue(context.applicationContext)
     }
 
-    // Adds a request to the request queue
-    fun <T> addToRequestQueue(req: Request<T>) {
+    // Adds a request to the request queue with the given tag
+    fun <T> addToRequestQueue(req: Request<T>, tag: String? = null) {
+        if (tag != null) {
+            req.tag = tag
+        }
         requestQueue.add(req)
     }
 

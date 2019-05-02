@@ -15,4 +15,7 @@ object ActivityConstants {
     const val SHOPPING_BARCODE_INTENT = 0
     const val STORE_OBJ_KEY = "STORE_OBJ" // Key for the Store extra
 
+    // Checkout
+    const val CHECKOUT_PAYMENT_SRC_INTENT = 0
+
 }
