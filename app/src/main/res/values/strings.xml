@@ -10,4 +10,13 @@
     <string name="shopping_activity_cart_label">CART</string>
     <string name="shopping_activity_clear_cart_button">CLEAR</string>
     <string name="shopping_activity_checkout_button">Checkout</string>
+    <!--Checkout Activity-->
+    <string name="checkout_activity_title">Checkout</string>
+    <string name="checkout_activity_cancel_button">Cancel</string>
+    <string name="checkout_total_amount_label">Total:</string>
+    <string name="checkout_cart_heading_label">CART</string>
+    <string name="checkout_payment_section_label">PAYMENT</string>
+    <string name="checkout_payment_method_label">Payment Method:</string>
+    <string name="checkout_edit_payment_button">EDIT</string>
+    <string name="checkout_pay_now_button">Pay Now</string>
 </resources>

@@ -23,20 +23,6 @@ android {
     androidExtensions {
         experimental = true
     }
-    sourceSets {
-        main {
-            res.srcDirs =
-                    [
-                            'src/main/res/layouts/activity',
-                            'src/main/res/layouts/dialog',
-                            'src/main/res/layouts/hud',
-                            'src/main/res/layouts/list',
-                            'src/main/res/layouts/misc',
-                            'src/main/res/layouts',
-                            'src/main/res'
-                    ]
-        }
-    }
 }
 
 dependencies {

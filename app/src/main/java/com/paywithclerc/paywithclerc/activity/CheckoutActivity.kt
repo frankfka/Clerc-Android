@@ -29,9 +29,6 @@ class CheckoutActivity : AppCompatActivity() {
         setContentView(R.layout.activity_checkout)
 
         setupPaymentSession()
-        checkoutSelectPaymentButton.setOnClickListener {
-            mPaymentSession?.presentPaymentMethodSelection()
-        }
 
     }
 
