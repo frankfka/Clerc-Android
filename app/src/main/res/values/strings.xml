@@ -25,4 +25,11 @@
     <string name="payment_success_header">That was easy.</string>
     <string name="payment_success_description">Your transaction was successfully completed. You\'re good to go!</string>
     <string name="payment_success_dismiss_button">Done</string>
+    <!--Login Activity-->
+    <string name="login_welcome_header">Welcome to Clerc</string>
+    <string name="login_welcome_description">Scan items and pay directly within the app. Clerc makes shopping easy, fun, and efficient.</string>
+    <string name="main_activity_top_bar_title">Clerc</string>
+    <string name="main_activity_start_shopping_button">Start Shopping</string>
+    <string name="main_activity_no_txns_description"><![CDATA[Clerc makes shopping fast & easy. Your past transactions will appear here.]]></string>
+    <string name="main_activity_past_purchases_header">Past Purchases</string>
 </resources>

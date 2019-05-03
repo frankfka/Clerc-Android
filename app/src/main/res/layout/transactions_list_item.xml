@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:paddingTop="8sp"
+              android:paddingBottom="8sp"
+              android:background="@drawable/bottom_border_white_background">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                tools:text="Store Name"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:id="@+id/txnListStoreNameLabel"
+                android:layout_weight="1"
+                android:textColor="@color/colorTextDark"
+                android:textSize="@dimen/normalFontSize"/>
+
+        <TextView
+                tools:text="Apr 26, 2019"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txnListDateLabel"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/smallFontSize"/>
+    </LinearLayout>
+
+    <TextView
+            tools:text="$6.99"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/txnListCostLabel"
+            android:gravity="center_vertical|end"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/mediumFontSize"
+            android:layout_weight="1"/>
+</LinearLayout>

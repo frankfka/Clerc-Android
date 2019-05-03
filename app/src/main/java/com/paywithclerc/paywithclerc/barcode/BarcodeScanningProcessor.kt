@@ -55,10 +55,11 @@ class BarcodeScanningProcessor(var barcodeDetected: (List<FirebaseVisionBarcode>
             graphicOverlay.add(imageGraphic)
         }
 
-        barcodes.forEach {
-            val barcodeGraphic = BarcodeGraphic(graphicOverlay, it)
-            graphicOverlay.add(barcodeGraphic)
-        }
+        // Don't show barcode overlay
+//        barcodes.forEach {
+//            val barcodeGraphic = BarcodeGraphic(graphicOverlay, it)
+//            graphicOverlay.add(barcodeGraphic)
+//        }
 
         graphicOverlay.postInvalidate()
     }

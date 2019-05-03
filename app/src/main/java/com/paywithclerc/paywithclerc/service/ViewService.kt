@@ -1,6 +1,7 @@
 package com.paywithclerc.paywithclerc.service
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.ClipDescription
 import android.content.Context
 import android.content.DialogInterface
@@ -21,8 +22,12 @@ import com.paywithclerc.paywithclerc.view.hud.LoadingHUD
 import com.paywithclerc.paywithclerc.view.hud.SuccessHUD
 import com.paywithclerc.paywithclerc.view.misc.NumberStepper
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 object ViewService {
+
+    private const val DEFAULT_DATE_FORMAT = "MMM dd, yyyy"
 
     /**
      * Show error HUD
@@ -74,12 +79,20 @@ object ViewService {
         dialogView.findViewById<TextView>(R.id.confirmDialogTitle).text = title
         dialogView.findViewById<TextView>(R.id.confirmDialogDescription).text = description
         // Build the dialog & show
-        AlertDialog.Builder(activity)
+        val alertDialog = AlertDialog.Builder(activity)
             .setView(dialogView)
             .setPositiveButton(confirmBtnText ?: "Confirm", confirmClickListener)
             .setNegativeButton(cancelBtnText ?: "Cancel", cancelClickListener)
             .create()
-            .show()
+        // Show the dialog
+        alertDialog.show()
+        // Customize the button colors
+        val positiveButton = alertDialog.getButton(Dialog.BUTTON_POSITIVE)
+        val negativeButton = alertDialog.getButton(Dialog.BUTTON_NEGATIVE)
+        if (positiveButton != null && negativeButton != null) {
+            positiveButton.setTextColor(activity.resources.getColor(R.color.colorPrimary, null))
+            negativeButton.setTextColor(activity.resources.getColor(R.color.colorPrimary, null))
+        }
     }
 
     /**
@@ -131,6 +144,14 @@ object ViewService {
      */
     fun getFormattedCost(cost: Double): String {
         return NumberFormat.getCurrencyInstance().format(cost)
+    }
+
+    /**
+     * Gets a formatted date string
+     */
+    fun getFormattedDate(date: Date): String {
+        val dateFormat = SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.CANADA)
+        return dateFormat.format(date)
     }
 
 }
