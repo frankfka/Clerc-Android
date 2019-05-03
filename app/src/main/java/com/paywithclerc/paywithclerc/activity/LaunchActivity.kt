@@ -3,14 +3,13 @@ package com.paywithclerc.paywithclerc.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.paywithclerc.paywithclerc.R
-import com.paywithclerc.paywithclerc.service.FirebaseAuthService
 import android.content.Intent
 import android.util.Log
 import com.paywithclerc.paywithclerc.constant.StripeConstants
-import com.paywithclerc.paywithclerc.service.FirestoreService
-import com.paywithclerc.paywithclerc.service.NetworkService
-import com.paywithclerc.paywithclerc.service.SessionService
+import com.paywithclerc.paywithclerc.model.Transaction
+import com.paywithclerc.paywithclerc.service.*
 import com.stripe.android.PaymentConfiguration
+import io.realm.Realm
 
 /**
  * This activity contains the splash screen & will redirect users
@@ -18,9 +17,14 @@ import com.stripe.android.PaymentConfiguration
  */
 class LaunchActivity : AppCompatActivity() {
 
+    /**
+     * Does all the setup & loading for the application, then redirects to the proper activity
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
+        // Configure realm
+        RealmService.initializeRealm(this)
         // Configure Stripe
         PaymentConfiguration.init(StripeConstants.PUBLISHABLE_KEY)
         // Try to load current user

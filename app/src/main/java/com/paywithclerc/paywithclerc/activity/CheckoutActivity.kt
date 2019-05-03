@@ -12,17 +12,14 @@ import com.paywithclerc.paywithclerc.model.Product
 import com.paywithclerc.paywithclerc.view.hud.LoadingHUD
 import com.stripe.android.*
 import kotlinx.android.synthetic.main.activity_checkout.*
-import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.paywithclerc.paywithclerc.constant.StripeConstants
 import com.paywithclerc.paywithclerc.model.Store
 import com.paywithclerc.paywithclerc.service.*
 import com.paywithclerc.paywithclerc.service.stripe.PaymentCompletionService
 import com.paywithclerc.paywithclerc.view.adapter.ItemListAdapter
 import com.stripe.android.CustomerSession.CustomerRetrievalListener
 import com.stripe.android.model.Customer
-import com.stripe.android.model.Source
-import kotlinx.android.synthetic.main.activity_shopping.*
 
 
 /**
@@ -43,6 +40,7 @@ class CheckoutActivity : AppCompatActivity() {
     private var items: MutableList<Product>? = null
     private var quantities: MutableList<Int>? = null
     private var store: Store? = null
+    private var amount: Double = 0.0
 
     // Payment States
     private var paymentSession: PaymentSession? = null
@@ -66,7 +64,9 @@ class CheckoutActivity : AppCompatActivity() {
         if (store != null && paymentSession != null && items != null && quantities != null
             && items!!.size > 0 && quantities!!.size > 0 && items!!.size == quantities!!.size) {
             // Pass total amount to the payment session
-            val cartTotal = BackendService.getStripeCost(UtilityService.getTotalCost(items!!, quantities!!))
+            amount = UtilityService.getTotalCost(items!!, quantities!!)
+            // Stripe cost is in cents
+            val cartTotal = BackendService.getStripeCost(amount)
             paymentSession!!.setCartTotal(cartTotal)
             // Initialize UI
             initializeUI()
@@ -132,9 +132,25 @@ class CheckoutActivity : AppCompatActivity() {
             if (paymentReadyToCharge && paymentResult == PaymentResultListener.INCOMPLETE) {
                 // Call the our PaymentCompletionService class to complete the payment via backend
                 val paymentCompletionService = PaymentCompletionService(this, store!!, TAG) { success, txnId, error ->
-                    // do stuff with the info
-                    Log.e(TAG, "$success, $txnId, ${error?.message}")
-                    // TODO add to firebase
+                    if (success && txnId != null) {
+                        // Add to Firebase - NOTE: We force unwrap everything here - to be at this step
+                        // it isn't possible for any of these items to be null
+                        FirestoreService.writeTransaction(
+                            customerId = com.paywithclerc.paywithclerc.model.Customer.current!!.firebaseID,
+                            storeId = store!!.id,
+                            amount = amount,
+                            items = items!!,
+                            quantities = quantities!!,
+                            txnId = txnId) { firebaseTxnWriteSuccess, firebaseTxnWriteError ->
+                            // Not much need for a callback at this point
+                            Log.i(TAG, "Firestore transaction write. Success: $firebaseTxnWriteSuccess, Error: ${firebaseTxnWriteError?.message}")
+                        }
+                        // Add to Realm
+                        RealmService.addTransaction(txnId, store!!.name, amount, StripeConstants.DEFAULT_CURRENCY)
+                    } else {
+                        // Errors handled elsewhere - just log
+                        Log.e(TAG, "Transaction failed with error: ${error?.message}")
+                    }
                 }
                 // Set to loading
                 isLoading = true

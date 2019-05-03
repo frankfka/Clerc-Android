@@ -2,13 +2,17 @@ package com.paywithclerc.paywithclerc.service
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.paywithclerc.paywithclerc.constant.FirestoreConstants
+import com.paywithclerc.paywithclerc.constant.StripeConstants
 import com.paywithclerc.paywithclerc.model.Customer
 import com.paywithclerc.paywithclerc.model.Error
 import com.paywithclerc.paywithclerc.model.Product
 import com.paywithclerc.paywithclerc.model.Store
+import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.cos
 
 object FirestoreService {
@@ -140,6 +144,55 @@ object FirestoreService {
                 Log.e(TAG, "Product document retrieval failed with $exception")
                 onResult(false, null, Error("$exception"))
             }
+    }
+
+    /**
+     * Writes a transaction to Firebase
+     *
+     * onResult -> (success, error object) determines whether the write transaction was a success
+     */
+    fun writeTransaction(customerId: String, storeId: String, amount: Double,
+                         items: List<Product>, quantities: List<Int>, txnId: String,
+                         onResult: (Boolean, Error?) -> Unit) {
+
+        // Create document data
+        var txnData = HashMap<String, Any?>()
+        var itemsData = mutableListOf<Map<String, Any?>>()
+
+        // Add all the items to item data
+        for (index in 0 until items.size) {
+            val item = items[index]
+            val itemData = hashMapOf(
+                "id" to item.id,
+                "name" to item.name,
+                "cost" to item.cost,
+                "quantity" to quantities[index]
+            )
+            itemsData.add(itemData)
+        }
+
+        // Create transaction data
+        txnData["transaction_id"] = txnId
+        txnData["customer_id"] = customerId
+        txnData["store_id"] = storeId
+        txnData["currency"] = StripeConstants.DEFAULT_CURRENCY
+        txnData["amount"] = amount
+        txnData["date"] = Timestamp(Date())
+        txnData["items"] = itemsData
+
+        // Add to firebase
+        val db = getFirestore()
+        db.collection(FirestoreConstants.TXN_COL)
+            .document(txnId)
+            .set(txnData)
+            .addOnSuccessListener {
+                onResult(true, null)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Transaction write failed with ${exception.message}")
+                onResult(false, Error("Transaction write failed with ${exception.message}"))
+            }
+
     }
 
     // Gets a Firestore database instance
