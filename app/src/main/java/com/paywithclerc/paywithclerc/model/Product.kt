@@ -1,3 +1,7 @@
 package com.paywithclerc.paywithclerc.model
 
-data class Product(val id: String, val name: String, val cost: Double, val currency: String)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Product(val id: String, val name: String, val cost: Double, val currency: String) : Parcelable

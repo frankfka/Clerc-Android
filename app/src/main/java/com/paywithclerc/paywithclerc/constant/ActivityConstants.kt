@@ -16,6 +16,7 @@ object ActivityConstants {
     const val STORE_OBJ_KEY = "STORE_OBJ" // Key for the Store extra
 
     // Checkout
-    const val CHECKOUT_PAYMENT_SRC_INTENT = 0
+    const val ITEMS_KEY = "ITEMS_OBJ" // Key for the scanned items
+    const val QTYS_KEY = "QTS_OBJ" // Key for the scanned quantities
 
 }

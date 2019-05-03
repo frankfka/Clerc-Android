@@ -143,8 +143,8 @@ object BackendService {
     }
 
     // This is used to compute Stripe cost in cents
-    fun getStripeCost(cost: Double): Int {
-        return (cost*100).toInt()
+    fun getStripeCost(cost: Double): Long {
+        return (cost*100).toLong()
     }
 
 }

@@ -19,4 +19,6 @@
     <string name="checkout_payment_method_label">Payment Method:</string>
     <string name="checkout_edit_payment_button">EDIT</string>
     <string name="checkout_pay_now_button">Pay Now</string>
+    <string name="checkout_payment_method_none">None</string>
+    <string name="checkout_payment_method_generic_text">Selected</string>
 </resources>

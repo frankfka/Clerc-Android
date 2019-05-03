@@ -56,8 +56,8 @@ object ViewService {
      * Dismiss the loading HUD
      * In the future, we can look at animations
      */
-    fun dismissLoadingHUD(loadingHUD: LoadingHUD) {
-        loadingHUD.removeFromParent()
+    fun dismissLoadingHUD(loadingHUD: LoadingHUD?) {
+        loadingHUD?.removeFromParent()
     }
 
     /**

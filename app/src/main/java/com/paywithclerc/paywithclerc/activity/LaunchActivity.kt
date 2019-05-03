@@ -21,16 +21,6 @@ class LaunchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        NetworkService.getInstance(this).removeFromRequestQueue(TAG)
-    }
-
-    // Do any required loading here
-    public override fun onStart() {
-        super.onStart()
         // Configure Stripe
         PaymentConfiguration.init(StripeConstants.PUBLISHABLE_KEY)
         // Try to load current user
@@ -65,6 +55,11 @@ class LaunchActivity : AppCompatActivity() {
             // No user signed in - go to Login
             goToLogin()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkService.getInstance(this).removeFromRequestQueue(TAG)
     }
 
     private fun goToLogin() {

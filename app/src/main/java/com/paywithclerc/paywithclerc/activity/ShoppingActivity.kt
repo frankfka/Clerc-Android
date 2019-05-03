@@ -158,8 +158,10 @@ class ShoppingActivity : AppCompatActivity() {
             Log.e(TAG, "Checkout clicked")
             // Go to checkout screen
             val intent = Intent(this, CheckoutActivity::class.java)
+            // Add the items & quantities to the intent
+            intent.putParcelableArrayListExtra(ActivityConstants.ITEMS_KEY, ArrayList(items))
+            intent.putIntegerArrayListExtra(ActivityConstants.QTYS_KEY, ArrayList(quantities))
             startActivity(intent)
-            // TODO pass in items/total, etc.
         }
         shoppingClearCartButton.setOnClickListener {
             ViewService.showConfirmDialog(this, "Clear Cart", "Are you sure you want to clear the cart?",
@@ -182,6 +184,14 @@ class ShoppingActivity : AppCompatActivity() {
     private fun updateUI() {
         // Update cost label
         shoppingTotalAmount.text = ViewService.getFormattedCost(UtilityService.getTotalCost(items, quantities))
+        // Disable checkout button if we don't have anything in cart
+        if (items.size == 0) {
+            shoppingCheckoutButton.isEnabled = false
+            shoppingCheckoutButton.setTextColor(resources.getColor(R.color.colorPrimaryDisabled, null))
+        } else {
+            shoppingCheckoutButton.isEnabled = true
+            shoppingCheckoutButton.setTextColor(resources.getColor(R.color.colorPrimary, null))
+        }
         // Update Recycler
         itemListAdapter?.notifyDataSetChanged()
     }
