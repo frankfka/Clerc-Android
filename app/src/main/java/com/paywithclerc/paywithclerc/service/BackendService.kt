@@ -10,6 +10,7 @@ import com.paywithclerc.paywithclerc.constant.BackendConstants
 import com.paywithclerc.paywithclerc.model.Customer
 import com.paywithclerc.paywithclerc.model.Error
 import com.paywithclerc.paywithclerc.model.JWT
+import com.paywithclerc.paywithclerc.model.Store
 import org.json.JSONObject
 
 object BackendService {
@@ -96,6 +97,70 @@ object BackendService {
             }
 
         }
+    }
+
+    /**
+     * Calls backend to charge a given customer
+     *
+     * onResult -> success, txn ID, error
+     */
+    fun completeCharge(context: Context, amount: Long, store: Store,
+                       paymentSource: String, requestTag: String? = null,
+                       onResult: (Boolean, String?, Error?) -> Unit) {
+
+        val networkService = NetworkService.getInstance(context)
+        val currentCustomer = Customer.current
+
+        // Check that current customer exists
+        if (currentCustomer == null) {
+            Log.e(TAG, "No current customer!")
+            onResult(false, null, Error("No current customer"))
+            return
+        }
+
+        // Get JWT, if successful, call backend to charge
+        JWT.getToken(context, requestTag) { success, jwt, error ->
+
+            if (success && jwt != null) {
+                // JWT retrieval success, we can now get an ephemeral key
+                val chargeParams = hashMapOf(
+                    "token" to jwt.token,
+                    "customer_id" to currentCustomer.stripeID,
+                    "amount" to amount,
+                    "source" to paymentSource,
+                    "firebase_store_id" to store.id
+                )
+                // POST the request to our backend server
+                val createEphemeralKeyRequest = JsonObjectRequest(Request.Method.POST,
+                    BackendConstants.CHARGE_URL,
+                    JSONObject(chargeParams),
+                    Response.Listener { response ->
+                        // Check that backend returned properly
+                        if (!response.isNull("charge_id")) {
+                            // Success - call the callback
+                            onResult(true, response.getString("charge_id"), null)
+                        } else {
+                            // Charge ID not given
+                            Log.e(TAG, "Got a success code but charge ID (txn ID) was not given in returned json")
+                            onResult(false, null, Error("Incorrect backend response. Response: ${response.toString(2)}"))
+                        }
+                    },
+                    Response.ErrorListener { networkError ->
+                        // Error from backend
+                        Log.e(TAG, "Backend network call errored while charging customer")
+                        onResult(false, null, Error("${networkError.message}"))
+                    })
+                // Add the request to the network queue
+                networkService.addToRequestQueue(createEphemeralKeyRequest, requestTag)
+
+            } else {
+                // JWT retrieval failed
+                Log.e(TAG, "Could not create ephemeral key because JWT retrieval failed")
+                onResult(false, null, Error("${error?.message}"))
+            }
+
+        }
+
     }
 
     /**

@@ -9,16 +9,15 @@ import androidx.annotation.Nullable
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants
 import com.paywithclerc.paywithclerc.model.Product
-import com.paywithclerc.paywithclerc.service.BackendService
-import com.paywithclerc.paywithclerc.service.SessionService
-import com.paywithclerc.paywithclerc.service.UtilityService
-import com.paywithclerc.paywithclerc.service.ViewService
 import com.paywithclerc.paywithclerc.view.hud.LoadingHUD
 import com.stripe.android.*
 import kotlinx.android.synthetic.main.activity_checkout.*
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.paywithclerc.paywithclerc.model.Store
+import com.paywithclerc.paywithclerc.service.*
+import com.paywithclerc.paywithclerc.service.stripe.PaymentCompletionService
 import com.paywithclerc.paywithclerc.view.adapter.ItemListAdapter
 import com.stripe.android.CustomerSession.CustomerRetrievalListener
 import com.stripe.android.model.Customer
@@ -43,6 +42,7 @@ class CheckoutActivity : AppCompatActivity() {
     // Passed from prior activity
     private var items: MutableList<Product>? = null
     private var quantities: MutableList<Int>? = null
+    private var store: Store? = null
 
     // Payment States
     private var paymentSession: PaymentSession? = null
@@ -57,15 +57,17 @@ class CheckoutActivity : AppCompatActivity() {
         setContentView(R.layout.activity_checkout)
 
         // Get the passed cart info
+        store = intent.getParcelableExtra(ActivityConstants.STORE_OBJ_KEY)
         items = intent.getParcelableArrayListExtra(ActivityConstants.ITEMS_KEY)
         quantities = intent.getIntegerArrayListExtra(ActivityConstants.QTYS_KEY)
         // First thing to do is to set up the Payment Session - this is done synchronously
         setupPaymentSession()
         // Check that we have a success, otherwise just finish the activity
-        if (paymentSession != null && items != null && quantities != null
+        if (store != null && paymentSession != null && items != null && quantities != null
             && items!!.size > 0 && quantities!!.size > 0 && items!!.size == quantities!!.size) {
             // Pass total amount to the payment session
-            paymentSession!!.setCartTotal(BackendService.getStripeCost(UtilityService.getTotalCost(items!!, quantities!!)))
+            val cartTotal = BackendService.getStripeCost(UtilityService.getTotalCost(items!!, quantities!!))
+            paymentSession!!.setCartTotal(cartTotal)
             // Initialize UI
             initializeUI()
             // Update UI
@@ -94,6 +96,8 @@ class CheckoutActivity : AppCompatActivity() {
         super.onDestroy()
         // This ensures that the payment session ends successfully
         paymentSession?.onDestroy()
+        // End all network requests - prevents charging if we exit the activity
+        NetworkService.getInstance(this).removeFromRequestQueue(TAG)
     }
 
     /**
@@ -122,8 +126,21 @@ class CheckoutActivity : AppCompatActivity() {
             paymentSession?.presentPaymentMethodSelection()
         }
         checkoutPayNowButton.setOnClickListener {
-            // Do some payment stuff
-            Log.e(TAG, "PAY!!!")
+            // First thing - disable all buttons
+            buttonsEnabled(editPaymentEnabled = false, payEnabled = false, cancelEnabled = false)
+            // Call Stripe to complete payment after checking that we have a valid state
+            if (paymentReadyToCharge && paymentResult == PaymentResultListener.INCOMPLETE) {
+                // Call the our PaymentCompletionService class to complete the payment via backend
+                val paymentCompletionService = PaymentCompletionService(this, store!!, TAG) { success, txnId, error ->
+                    // do stuff with the info
+                    Log.e(TAG, "$success, $txnId, ${error?.message}")
+                    // TODO add to firebase
+                }
+                // Set to loading
+                isLoading = true
+                updateUI()
+                paymentSession?.completePayment(paymentCompletionService)
+            }
         }
 
         // Run Update UI once
@@ -195,7 +212,7 @@ class CheckoutActivity : AppCompatActivity() {
             shouldEnableEditPayment = false
             shouldEnablePayButton = false
         } else {
-            // One specific state for enabling payment button
+            // Enable payment button if payment is ready to charge & current payment result is incomplete
             shouldEnablePayButton = paymentReadyToCharge && paymentResult == PaymentResultListener.INCOMPLETE
             shouldEnableCancelButton = true
             shouldEnableEditPayment = true
@@ -227,7 +244,27 @@ class CheckoutActivity : AppCompatActivity() {
                 paymentReadyToCharge = data.isPaymentReadyToCharge
                 paymentResult = data.paymentResult
                 selectedPaymentId = data.selectedPaymentMethodId
-                updateUI()
+
+                when (paymentResult) {
+                    PaymentResultListener.SUCCESS -> { // Payment succeeded
+                        // Navigate to success activity
+                        Log.i(TAG, "Payment was successful")
+                        val paymentSuccessIntent = Intent(this@CheckoutActivity, PaymentSuccessActivity::class.java)
+                        // Set flags to clear all previous activities - using bitwise OR
+                        paymentSuccessIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(paymentSuccessIntent)
+                    }
+                    PaymentResultListener.ERROR -> { // Payment failed
+                        // TODO test this!
+                        Log.i(TAG, "Payment failed")
+                        // Show some error message to the user
+                        isLoading = false
+                        updateUI()
+                        ViewService.showErrorHUD(this@CheckoutActivity, checkoutParentConstraintLayout, "Payment Failed. Please try again.")
+                    }
+                    else -> // Normal updating payment method, etc.
+                        updateUI()
+                }
             }
 
         }

@@ -157,7 +157,8 @@ class ShoppingActivity : AppCompatActivity() {
         shoppingCheckoutButton.setOnClickListener {
             // Go to checkout screen
             val intent = Intent(this, CheckoutActivity::class.java)
-            // Add the items & quantities to the intent
+            // Add the store, items & quantities to the intent
+            intent.putExtra(ActivityConstants.STORE_OBJ_KEY, store!!)
             intent.putParcelableArrayListExtra(ActivityConstants.ITEMS_KEY, ArrayList(items))
             intent.putIntegerArrayListExtra(ActivityConstants.QTYS_KEY, ArrayList(quantities))
             startActivity(intent)

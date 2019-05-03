@@ -33,6 +33,7 @@ class NetworkService constructor(context: Context) {
         if (tag != null) {
             req.tag = tag
         }
+        // TODO set retry policy
         requestQueue.add(req)
     }
 

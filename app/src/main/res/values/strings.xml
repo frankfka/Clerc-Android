@@ -21,4 +21,8 @@
     <string name="checkout_pay_now_button">Pay Now</string>
     <string name="checkout_payment_method_none">None</string>
     <string name="checkout_payment_method_generic_text">Selected</string>
+    <!--Payment Success Activity-->
+    <string name="payment_success_header">That was easy.</string>
+    <string name="payment_success_description">Your transaction was successfully completed. You\'re good to go!</string>
+    <string name="payment_success_dismiss_button">Done</string>
 </resources>
