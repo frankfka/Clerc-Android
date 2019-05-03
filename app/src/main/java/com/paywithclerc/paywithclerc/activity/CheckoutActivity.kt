@@ -137,7 +137,7 @@ class CheckoutActivity : AppCompatActivity() {
         updateViewState()
 
         // Loading UI
-        if (isLoading) {
+        if (isLoading && loadingHUD == null) { // Hack to make sure that we only have one loading HUD
             loadingHUD = ViewService.showLoadingHUD(this, checkoutParentConstraintLayout, "Please Wait")
         } else {
             ViewService.dismissLoadingHUD(loadingHUD)
@@ -146,7 +146,6 @@ class CheckoutActivity : AppCompatActivity() {
 
         // Payment Method
         if (selectedPaymentId != null) {
-            Log.e(TAG, selectedPaymentId)
             // Get & display the source name
             CustomerSession.getInstance().retrieveCurrentCustomer(object : CustomerRetrievalListener {
                 override fun onCustomerRetrieved(customer: Customer) {
@@ -197,13 +196,9 @@ class CheckoutActivity : AppCompatActivity() {
             shouldEnablePayButton = false
         } else {
             // One specific state for enabling payment button
-            if (paymentReadyToCharge && paymentResult == PaymentResultListener.INCOMPLETE) {
-                shouldEnablePayButton = true
-            } else {
-                shouldEnablePayButton = false
-                shouldEnableCancelButton = true
-                shouldEnableEditPayment = true
-            }
+            shouldEnablePayButton = paymentReadyToCharge && paymentResult == PaymentResultListener.INCOMPLETE
+            shouldEnableCancelButton = true
+            shouldEnableEditPayment = true
         }
     }
 

@@ -155,7 +155,6 @@ class ShoppingActivity : AppCompatActivity() {
             exitShopping()
         }
         shoppingCheckoutButton.setOnClickListener {
-            Log.e(TAG, "Checkout clicked")
             // Go to checkout screen
             val intent = Intent(this, CheckoutActivity::class.java)
             // Add the items & quantities to the intent
