@@ -4,6 +4,8 @@
     <string name="default_error">Something went wrong. Please try again.</string>
     <string name="default_success">Success</string>
     <string name="default_loading">Loading…</string>
+    <!--Barcode Activity-->
+    <string name="barcode_scanning_hint">Place barcode inside the view. Scanning will occur automatically.</string>
     <!--Shopping Activity-->
     <string name="shopping_activity_cancel_button">Cancel</string>
     <string name="shopping_activity_total_label">Total:</string>

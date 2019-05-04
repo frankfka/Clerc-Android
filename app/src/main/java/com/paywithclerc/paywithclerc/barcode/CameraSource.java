@@ -38,7 +38,7 @@ public class CameraSource {
     @SuppressLint("InlinedApi")
     public static final int CAMERA_FACING_FRONT = CameraInfo.CAMERA_FACING_FRONT;
 
-    private static final String TAG = "MIDemoApp:CameraSource";
+    private static final String TAG = "CameraSource";
 
     /**
      * The dummy surface texture must be assigned a chosen name. Since we never use an OpenGL context,
@@ -69,9 +69,9 @@ public class CameraSource {
 
     // These values may be requested by the caller.  Due to hardware limitations, we may need to
     // select close, but not exactly the same values for these.
-    private final float requestedFps = 20.0f;
-    private final int requestedPreviewWidth = 480;
-    private final int requestedPreviewHeight = 360;
+    private final float requestedFps = 30.0f;
+    private final int requestedPreviewWidth = 960;
+    private final int requestedPreviewHeight = 720;
     private final boolean requestedAutoFocus = true;
 
     // These instances need to be held onto to avoid GC of their underlying resources.  Even though

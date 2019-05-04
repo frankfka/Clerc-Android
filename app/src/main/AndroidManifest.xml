@@ -22,16 +22,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.PaymentSuccessActivity">
-        </activity>
-        <activity
-                android:name=".activity.CheckoutActivity"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"/>
-        <activity
-                android:name=".activity.ShoppingActivity"
-                android:launchMode="singleTop"
-                android:screenOrientation="portrait"/>
+
+
         <activity
                 android:name=".activity.LaunchActivity"
                 android:launchMode="singleTop"
@@ -42,18 +34,30 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
-                android:name=".activity.MainActivity"
+                android:name=".activity.LoginActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".activity.LoginActivity"
+                android:name=".activity.MainActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"/>
         <activity
                 android:name=".activity.BarcodeScannerActivity"
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"/>
+        <activity
+                android:name=".activity.ShoppingActivity"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"/>
+        <activity
+                android:name=".activity.CheckoutActivity"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PaymentSuccessActivity"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
