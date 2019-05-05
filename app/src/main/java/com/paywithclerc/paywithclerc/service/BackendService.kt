@@ -40,7 +40,7 @@ object BackendService {
             Response.ErrorListener { error ->
                 // Error from backend
                 Log.e(TAG, "Backend network call errored while creating customer")
-                onResult(false, null, Error("${error.networkResponse.data}"))
+                onResult(false, null, Error("${error?.networkResponse?.data}"))
             })
         // Add the request to the network queue
         networkService.addToRequestQueue(createCustomerRequest, requestTag)
@@ -148,7 +148,7 @@ object BackendService {
                     Response.ErrorListener { networkError ->
                         // Error from backend
                         Log.e(TAG, "Backend network call errored while charging customer")
-                        onResult(false, null, Error("${networkError.message}"))
+                        onResult(false, null, Error("${networkError?.message}"))
                     })
                 // Add the request to the network queue
                 networkService.addToRequestQueue(createEphemeralKeyRequest, requestTag)
@@ -200,7 +200,7 @@ object BackendService {
             Response.ErrorListener { error ->
                 // Error from backend
                 Log.e(TAG, "Backend network call errored while requesting new JWT token")
-                onResult(false, null, Error("${error.networkResponse.data}"))
+                onResult(false, null, Error("${error?.networkResponse?.data}"))
             })
         // Add the request to the network queue
         networkService.addToRequestQueue(getJWTRequest, requestTag)

@@ -129,7 +129,7 @@ class CheckoutActivity : AppCompatActivity() {
             // First thing - disable all buttons
             buttonsEnabled(editPaymentEnabled = false, payEnabled = false, cancelEnabled = false)
             // Call Stripe to complete payment after checking that we have a valid state
-            if (paymentReadyToCharge && paymentResult == PaymentResultListener.INCOMPLETE) {
+            if (paymentReadyToCharge && paymentResult != PaymentResultListener.SUCCESS) {
                 // Call the our PaymentCompletionService class to complete the payment via backend
                 val paymentCompletionService = PaymentCompletionService(this, store!!, TAG) { success, txnId, error ->
                     if (success && txnId != null) {
@@ -182,6 +182,7 @@ class CheckoutActivity : AppCompatActivity() {
             // Get & display the source name
             CustomerSession.getInstance().retrieveCurrentCustomer(object : CustomerRetrievalListener {
                 override fun onCustomerRetrieved(customer: Customer) {
+                    // Fetches and displays the payment method
                     val displaySource = customer.getSourceById(selectedPaymentId!!)
                     val source = displaySource?.asSource()
                     // Check that we can extract a source & that the source metadata is populated
@@ -207,7 +208,7 @@ class CheckoutActivity : AppCompatActivity() {
 
         // Error UI
         if (errorMsg != null) {
-            ViewService.showErrorHUD(this, checkoutParentConstraintLayout, errorMsg)
+            ViewService.showErrorHUD(this, checkoutParentConstraintLayout, "Something went wrong. Please try again.")
         }
 
         // Update buttons enabled/disabled
@@ -228,8 +229,8 @@ class CheckoutActivity : AppCompatActivity() {
             shouldEnableEditPayment = false
             shouldEnablePayButton = false
         } else {
-            // Enable payment button if payment is ready to charge & current payment result is incomplete
-            shouldEnablePayButton = paymentReadyToCharge && paymentResult == PaymentResultListener.INCOMPLETE
+            // Enable payment button if payment is ready to charge & current payment result is not success
+            shouldEnablePayButton = paymentReadyToCharge && paymentResult != PaymentResultListener.SUCCESS
             shouldEnableCancelButton = true
             shouldEnableEditPayment = true
         }
@@ -271,8 +272,7 @@ class CheckoutActivity : AppCompatActivity() {
                         startActivity(paymentSuccessIntent)
                     }
                     PaymentResultListener.ERROR -> { // Payment failed
-                        // TODO test this!
-                        Log.i(TAG, "Payment failed")
+                        Log.e(TAG, "Payment failed")
                         // Show some error message to the user
                         isLoading = false
                         updateUI()

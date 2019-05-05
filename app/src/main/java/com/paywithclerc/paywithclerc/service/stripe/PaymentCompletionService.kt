@@ -18,10 +18,11 @@ class PaymentCompletionService(val context: Context, val store: Store, val reque
                                val onResult: (Boolean, String?, Error?) -> Unit): PaymentCompletionProvider {
 
     override fun completePayment(data: PaymentSessionData, listener: PaymentResultListener) {
+
         // Do state checking just in case
         if (data.isPaymentReadyToCharge
             && data.selectedPaymentMethodId != null
-            && data.paymentResult == PaymentResultListener.INCOMPLETE
+            && data.paymentResult != PaymentResultListener.SUCCESS
             && data.cartTotal > 0) {
 
             // Now check that we have all that's needed to call backend
@@ -33,7 +34,8 @@ class PaymentCompletionService(val context: Context, val store: Store, val reque
                     onResult(success, txnId, error)
                 } else {
                     Log.e(TAG, "Charge was not successful. Error: ${error?.message}")
-                    listener.onPaymentResult(PaymentResultListener.SUCCESS)
+                    listener.onPaymentResult(PaymentResultListener.ERROR
+                    )
                     onResult(success, txnId, error)
                 }
             }

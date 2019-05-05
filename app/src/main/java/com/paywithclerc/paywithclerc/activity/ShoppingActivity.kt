@@ -187,10 +187,14 @@ class ShoppingActivity : AppCompatActivity() {
         // Disable checkout button if we don't have anything in cart
         if (items.size == 0) {
             shoppingCheckoutButton.isEnabled = false
+            shoppingClearCartButton.isEnabled = false
             shoppingCheckoutButton.setTextColor(resources.getColor(R.color.colorPrimaryDisabled, null))
+            shoppingClearCartButton.setTextColor(resources.getColor(R.color.colorPrimaryDisabled, null))
         } else {
             shoppingCheckoutButton.isEnabled = true
+            shoppingClearCartButton.isEnabled = true
             shoppingCheckoutButton.setTextColor(resources.getColor(R.color.colorPrimary, null))
+            shoppingClearCartButton.setTextColor(resources.getColor(R.color.colorPrimary, null))
         }
         // Update Recycler
         itemListAdapter?.notifyDataSetChanged()

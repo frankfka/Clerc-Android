@@ -24,11 +24,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/checkoutCancelButton"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="16sp"
-                android:layout_marginTop="16sp"
+                android:layout_marginStart="8sp"
+                android:layout_marginTop="8sp"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textSize="@dimen/mediumFontSize"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:padding="8sp"/>
 
         <TextView
                 android:layout_width="wrap_content"
@@ -69,6 +70,21 @@
                 android:id="@+id/checkoutScrollViewConstraintLayout">
 
             <TextView
+                    android:text="@string/checkout_cart_heading_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/checkoutCartSectionLabel"
+                    android:textSize="@dimen/normalFontSize"
+                    android:textColor="@color/colorTextDark"
+                    android:layout_weight="1"
+                    android:background="@drawable/thick_bottom_border_white_background"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/checkoutBelowPaymentSpace"/>
+
+            <TextView
                     android:text="@string/checkout_total_amount_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,41 +121,17 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintTop_toBottomOf="@+id/checkoutTotalAmount"/>
 
-            <TextView
-                    android:text="@string/checkout_payment_section_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/checkoutPaymentSectionLabel"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="16dp"
-                    android:textSize="@dimen/normalFontSize"
-                    android:textColor="@color/colorTextDark"
-                    app:layout_constraintTop_toBottomOf="@+id/checkoutBelowAmountSpace"/>
-
-            <View
-                    android:layout_width="0dp"
-                    android:layout_height="1sp"
-                    android:id="@+id/checkoutPaymentSectionUnderline"
-                    app:layout_constraintTop_toBottomOf="@+id/checkoutPaymentSectionLabel"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/colorDivider"
-                    android:layout_marginTop="2dp"
-                    tools:ignore="SmallSp"/>
-
 
             <TextView
                     android:text="@string/checkout_payment_method_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/checkoutPaymentMethodLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/checkoutPaymentSectionUnderline"
-                    android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="16dp"
-                    android:textColor="@color/colorTextLight"/>
+                    android:textColor="@color/colorTextLight"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/checkoutPaymentSectionLabel"/>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -160,15 +152,13 @@
                     android:id="@+id/checkoutPaymentMethodEditButton"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="16dp"
-                    app:layout_constraintTop_toBottomOf="@+id/checkoutPaymentMethodLabel"
                     app:layout_constraintStart_toEndOf="@+id/checkoutPaymentMethod"
                     android:layout_marginStart="32dp"
                     app:layout_constraintHorizontal_bias="1.0"
                     android:textSize="@dimen/normalFontSize"
                     android:textColor="@color/colorPrimary"
                     app:layout_constraintBottom_toTopOf="@+id/checkoutBelowPaymentSpace"
-                    app:layout_constraintVertical_bias="0.0"
-                    android:layout_marginBottom="8dp"/>
+                    android:padding="8sp"/>
 
             <Space
                     android:layout_width="0dp"
@@ -180,39 +170,33 @@
                     app:layout_constraintTop_toBottomOf="@+id/checkoutPaymentMethod"/>
 
             <TextView
-                    android:text="@string/checkout_cart_heading_label"
-                    android:layout_width="wrap_content"
+                    android:text="@string/checkout_payment_section_label"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/checkoutCartLabel"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="16dp"
+                    android:id="@+id/checkoutPaymentSectionLabel"
                     android:textSize="@dimen/normalFontSize"
                     android:textColor="@color/colorTextDark"
-                    app:layout_constraintTop_toBottomOf="@+id/checkoutBelowPaymentSpace"/>
-
-            <View
-                    android:layout_width="0dp"
-                    android:layout_height="1sp"
-                    android:id="@+id/checkoutCartSectionUnderline"
-                    app:layout_constraintTop_toBottomOf="@+id/checkoutCartLabel"
+                    android:layout_weight="1"
+                    android:background="@drawable/thick_bottom_border_white_background"
+                    app:layout_constraintTop_toBottomOf="@+id/checkoutBelowAmountSpace"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/colorDivider"
-                    android:layout_marginTop="2dp"
-                    tools:ignore="SmallSp"/>
+                    android:layout_marginEnd="16dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@+id/checkoutCartSectionUnderline"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="16dp"
-                    android:id="@+id/checkoutCartItemsRecyclerView"/>
+                    android:id="@+id/checkoutCartItemsRecyclerView"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/checkoutCartSectionLabel">
+
+            </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
