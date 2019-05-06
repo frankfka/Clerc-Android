@@ -125,38 +125,45 @@ class CheckoutActivity : AppCompatActivity() {
         checkoutPaymentMethodEditButton.setOnClickListener {
             paymentSession?.presentPaymentMethodSelection()
         }
+        // PAY NOW BUTTON
         checkoutPayNowButton.setOnClickListener {
-            // First thing - disable all buttons
-            buttonsEnabled(editPaymentEnabled = false, payEnabled = false, cancelEnabled = false)
-            // Call Stripe to complete payment after checking that we have a valid state
-            if (paymentReadyToCharge && paymentResult != PaymentResultListener.SUCCESS) {
-                // Call the our PaymentCompletionService class to complete the payment via backend
-                val paymentCompletionService = PaymentCompletionService(this, store!!, TAG) { success, txnId, error ->
-                    if (success && txnId != null) {
-                        // Add to Firebase - NOTE: We force unwrap everything here - to be at this step
-                        // it isn't possible for any of these items to be null
-                        FirestoreService.writeTransaction(
-                            customerId = com.paywithclerc.paywithclerc.model.Customer.current!!.firebaseID,
-                            storeId = store!!.id,
-                            amount = amount,
-                            items = items!!,
-                            quantities = quantities!!,
-                            txnId = txnId) { firebaseTxnWriteSuccess, firebaseTxnWriteError ->
-                            // Not much need for a callback at this point
-                            Log.i(TAG, "Firestore transaction write. Success: $firebaseTxnWriteSuccess, Error: ${firebaseTxnWriteError?.message}")
+            // Ask for a confirmation
+            ViewService.showConfirmDialog(this, "Confirm Payment", "Confirm payment of ${ViewService.getFormattedCost(amount)} to ${store?.name}",
+                confirmClickListener = DialogInterface.OnClickListener { _, _ ->
+                    // Payment has been confirmed
+
+                    // First thing - disable all buttons
+                    buttonsEnabled(editPaymentEnabled = false, payEnabled = false, cancelEnabled = false)
+                    // Call Stripe to complete payment after checking that we have a valid state
+                    if (paymentReadyToCharge && paymentResult != PaymentResultListener.SUCCESS) {
+                        // Call the our PaymentCompletionService class to complete the payment via backend
+                        val paymentCompletionService = PaymentCompletionService(this, store!!, TAG) { success, txnId, error ->
+                            if (success && txnId != null) {
+                                // Add to Firebase - NOTE: We force unwrap everything here - to be at this step
+                                // it isn't possible for any of these items to be null
+                                FirestoreService.writeTransaction(
+                                    customerId = com.paywithclerc.paywithclerc.model.Customer.current!!.firebaseID,
+                                    storeId = store!!.id,
+                                    amount = amount,
+                                    items = items!!,
+                                    quantities = quantities!!,
+                                    txnId = txnId) { firebaseTxnWriteSuccess, firebaseTxnWriteError ->
+                                    // Not much need for a callback at this point
+                                    Log.i(TAG, "Firestore transaction write. Success: $firebaseTxnWriteSuccess, Error: ${firebaseTxnWriteError?.message}")
+                                }
+                                // Add to Realm
+                                RealmService.addTransaction(txnId, store!!.name, amount, StripeConstants.DEFAULT_CURRENCY)
+                            } else {
+                                // Errors handled elsewhere - just log
+                                Log.e(TAG, "Transaction failed with error: ${error?.message}")
+                            }
                         }
-                        // Add to Realm
-                        RealmService.addTransaction(txnId, store!!.name, amount, StripeConstants.DEFAULT_CURRENCY)
-                    } else {
-                        // Errors handled elsewhere - just log
-                        Log.e(TAG, "Transaction failed with error: ${error?.message}")
+                        // Set to loading
+                        isLoading = true
+                        updateUI()
+                        paymentSession?.completePayment(paymentCompletionService)
                     }
-                }
-                // Set to loading
-                isLoading = true
-                updateUI()
-                paymentSession?.completePayment(paymentCompletionService)
-            }
+            })
         }
 
         // Run Update UI once
