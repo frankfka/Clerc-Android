@@ -126,9 +126,14 @@ object FirestoreService {
                 if (document != null && document.data != null) {
                     val docData = document.data!!
                     val productName = docData["name"] as String?
-                    val cost = docData["cost"] as Double?
+                    val firestoreCost = docData["cost"]
                     val currency = docData["currency"] as String?
-                    if (productName != null && cost != null && currency != null) {
+                    if (productName != null && firestoreCost != null && currency != null) {
+                        val cost: Double = if (firestoreCost is Long) {
+                            firestoreCost.toDouble()
+                        } else {
+                            firestoreCost as Double
+                        }
                         val scannedProduct = Product(productId, productName, cost, currency)
                         onResult(true, scannedProduct, null)
                     } else {
