@@ -17,7 +17,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/paymentSuccessDismissButton">
+            app:layout_constraintBottom_toTopOf="@+id/paymentSuccessDismissButton"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -33,9 +35,9 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginEnd="64dp"
-                    android:layout_marginStart="64dp">
+                    android:layout_marginStart="64dp"
+                    android:layout_marginTop="64dp">
 
                 <ImageView
                         android:layout_width="64dp"
@@ -62,6 +64,191 @@
                         android:textSize="@dimen/normalFontSize"
                         android:textColor="@color/colorTextLight"
                         android:gravity="center"/>
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintTop_toBottomOf="@+id/paymentSuccessHeaderLayout"
+                    android:id="@+id/paymentSuccessSummaryLayout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp">
+
+                <TextView
+                        android:text="@string/payment_success_summary_header"
+                        android:layout_width="match_parent"
+                        android:id="@+id/paymentSuccessPaymentSummaryLabel"
+                        android:textSize="@dimen/normalFontSize"
+                        android:textColor="@color/colorTextDark"
+                        android:background="@drawable/thick_bottom_border_white_background"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:textAllCaps="true"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/paymentSuccessStoreNameText"
+                        tools:text="Store Name"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintTop_toBottomOf="@+id/paymentSuccessPaymentSummaryLabel"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="@dimen/mediumFontSize"
+                        android:textStyle="bold"/>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="32dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="32dp"
+                        android:id="@+id/paymentSuccessCostSummaryLayout"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/paymentSuccessStoreNameText"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                            android:text="@string/cost_summary_total_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/paymentSuccessTotalAmountLabel"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginStart="32dp"
+                            android:textSize="@dimen/normalFontSize"
+                            android:textColor="@color/colorTextLight"
+                            android:gravity="center"/>
+
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/paymentSuccessTotalAmount"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginEnd="32dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginStart="32dp"
+                            tools:text="$ 0.00"
+                            app:layout_constraintTop_toBottomOf="@+id/checkoutTotalAmountLabel"
+                            android:textSize="@dimen/largeFontSize"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorTextDark"
+                            android:gravity="center"/>
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/paymentSuccessCostSummarySubtotalLayout"
+                            >
+
+                        <TextView
+                                android:text="@string/subtotal_label"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/paymentSuccessSubtotalLabel"
+                                android:layout_weight="1"
+                                android:paddingEnd="4sp"
+                                android:gravity="end"
+                                android:textSize="@dimen/normalFontSize"
+                                android:textColor="@color/colorTextLight"/>
+
+                        <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/paymentSuccessSubtotal"
+                                android:layout_weight="1"
+                                tools:text="$0.00"
+                                android:paddingStart="4sp"
+                                android:textSize="@dimen/normalFontSize"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorTextLight"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/paymentSuccessCostSummaryTaxesLayout"
+                            >
+
+                        <TextView
+                                android:text="@string/taxes_label"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/paymentSuccessTaxesLabel"
+                                android:layout_weight="1"
+                                android:paddingEnd="4sp"
+                                android:gravity="end"
+                                android:textSize="@dimen/normalFontSize"
+                                android:textColor="@color/colorTextLight"/>
+
+                        <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/paymentSuccessTaxes"
+                                android:layout_weight="1"
+                                tools:text="$0.00"
+                                android:paddingStart="4sp"
+                                android:textSize="@dimen/normalFontSize"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorTextLight"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintTop_toBottomOf="@+id/paymentSuccessSummaryLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginBottom="32dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:id="@+id/paymentSuccessItemsLayout">
+
+                <TextView
+                        android:text="@string/items_heading_label"
+                        android:layout_width="match_parent"
+                        android:id="@+id/paymentSuccessItemsHeaderLabel"
+                        android:textSize="@dimen/normalFontSize"
+                        android:textColor="@color/colorTextDark"
+                        android:background="@drawable/thick_bottom_border_white_background"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        android:layout_height="0dp"
+                        android:textAllCaps="true"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:id="@+id/paymentSuccessItemsRecyclerView"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/paymentSuccessItemsHeaderLabel"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        >
+
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

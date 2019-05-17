@@ -183,7 +183,11 @@ class ShoppingActivity : AppCompatActivity() {
     // Update UI based on state
     private fun updateUI() {
         // Update cost label
-        shoppingTotalAmount.text = ViewService.getFormattedCost(UtilityService.getTotalCost(items, quantities))
+        val subtotal = UtilityService.getTotalCost(items, quantities)
+        val taxes = UtilityService.getTaxes(subtotal, store!!)
+        shoppingTotalAmount.text = ViewService.getFormattedCost(subtotal + taxes)
+        shoppingSubtotal.text = ViewService.getFormattedCost(subtotal)
+        shoppingTaxes.text = ViewService.getFormattedCost(taxes)
         // Disable checkout button if we don't have anything in cart
         if (items.size == 0) {
             shoppingCheckoutButton.isEnabled = false

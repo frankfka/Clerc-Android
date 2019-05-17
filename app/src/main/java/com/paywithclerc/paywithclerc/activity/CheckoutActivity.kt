@@ -40,7 +40,9 @@ class CheckoutActivity : AppCompatActivity() {
     private var items: MutableList<Product>? = null
     private var quantities: MutableList<Int>? = null
     private var store: Store? = null
-    private var amount: Double = 0.0
+    private var totalAfterTaxes: Double = 0.0
+    private var totalBeforeTaxes: Double = 0.0
+    private var taxes: Double = 0.0
 
     // Payment States
     private var paymentSession: PaymentSession? = null
@@ -63,10 +65,12 @@ class CheckoutActivity : AppCompatActivity() {
         // Check that we have a success, otherwise just finish the activity
         if (store != null && paymentSession != null && items != null && quantities != null
             && items!!.size > 0 && quantities!!.size > 0 && items!!.size == quantities!!.size) {
-            // Pass total amount to the payment session
-            amount = UtilityService.getTotalCost(items!!, quantities!!)
+            // Pass total totalAfterTaxes to the payment session
+            totalBeforeTaxes = UtilityService.getTotalCost(items!!, quantities!!)
+            taxes = UtilityService.getTaxes(totalBeforeTaxes, store!!)
+            totalAfterTaxes = totalBeforeTaxes + taxes
             // Stripe cost is in cents
-            val cartTotal = BackendService.getStripeCost(amount)
+            val cartTotal = BackendService.getStripeCost(totalAfterTaxes)
             paymentSession!!.setCartTotal(cartTotal)
             // Initialize UI
             initializeUI()
@@ -109,7 +113,9 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun initializeUI() {
         // Update total cost
-        checkoutTotalAmount.text = ViewService.getFormattedCost(UtilityService.getTotalCost(items!!, quantities!!))
+        checkoutSubtotal.text = ViewService.getFormattedCost(totalBeforeTaxes)
+        checkoutTaxes.text = ViewService.getFormattedCost(taxes)
+        checkoutTotalAmount.text = ViewService.getFormattedCost(totalAfterTaxes)
 
         // Initialize the RecyclerView
         itemListAdapter = ItemListAdapter(items!!, quantities!!) { } // Not passing an on-click function
@@ -128,7 +134,7 @@ class CheckoutActivity : AppCompatActivity() {
         // PAY NOW BUTTON
         checkoutPayNowButton.setOnClickListener {
             // Ask for a confirmation
-            ViewService.showConfirmDialog(this, "Confirm Payment", "Confirm payment of ${ViewService.getFormattedCost(amount)} to ${store?.name}",
+            ViewService.showConfirmDialog(this, "Confirm Payment", "Confirm payment of ${ViewService.getFormattedCost(totalAfterTaxes)} to ${store?.name}",
                 confirmClickListener = DialogInterface.OnClickListener { _, _ ->
                     // Payment has been confirmed
 
@@ -144,7 +150,9 @@ class CheckoutActivity : AppCompatActivity() {
                                 FirestoreService.writeTransaction(
                                     customerId = com.paywithclerc.paywithclerc.model.Customer.current!!.firebaseID,
                                     storeId = store!!.id,
-                                    amount = amount,
+                                    costBeforeTaxes = totalBeforeTaxes,
+                                    taxes = taxes,
+                                    costAfterTaxes = totalAfterTaxes,
                                     items = items!!,
                                     quantities = quantities!!,
                                     txnId = txnId) { firebaseTxnWriteSuccess, firebaseTxnWriteError ->
@@ -152,7 +160,7 @@ class CheckoutActivity : AppCompatActivity() {
                                     Log.i(TAG, "Firestore transaction write. Success: $firebaseTxnWriteSuccess, Error: ${firebaseTxnWriteError?.message}")
                                 }
                                 // Add to Realm
-                                RealmService.addTransaction(txnId, store!!.name, amount, StripeConstants.DEFAULT_CURRENCY)
+                                RealmService.addTransaction(txnId, store!!.name, totalAfterTaxes, StripeConstants.DEFAULT_CURRENCY)
                             } else {
                                 // Errors handled elsewhere - just log
                                 Log.e(TAG, "Transaction failed with error: ${error?.message}")

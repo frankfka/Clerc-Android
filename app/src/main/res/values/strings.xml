@@ -7,22 +7,17 @@
     <!--Barcode Activity-->
     <string name="barcode_scanning_hint">Place barcode inside the view. Scanning will occur automatically.</string>
     <!--Shopping Activity-->
-    <string name="shopping_activity_cancel_button">Cancel</string>
-    <string name="shopping_activity_total_label">Total:</string>
-    <string name="shopping_activity_cart_label">CART</string>
     <string name="shopping_activity_clear_cart_button">CLEAR</string>
     <string name="shopping_activity_checkout_button">Checkout</string>
     <!--Checkout Activity-->
     <string name="checkout_activity_title">Checkout</string>
-    <string name="checkout_activity_cancel_button">Cancel</string>
-    <string name="checkout_total_amount_label">Total:</string>
-    <string name="checkout_cart_heading_label">CART</string>
     <string name="checkout_payment_section_label">PAYMENT</string>
     <string name="checkout_payment_method_label">Payment Method:</string>
     <string name="checkout_edit_payment_button">EDIT</string>
     <string name="checkout_pay_now_button">Pay Now</string>
     <string name="checkout_payment_method_none">None</string>
     <string name="checkout_payment_method_generic_text">Selected</string>
+    <string name="payment_safety_text">Your payment information is encrypted and safely stored.</string>
     <!--Payment Success Activity-->
     <string name="payment_success_header">That was easy.</string>
     <string name="payment_success_description">Your transaction was successfully completed. You\'re good to go!</string>
@@ -30,8 +25,17 @@
     <!--Login Activity-->
     <string name="login_welcome_header">Welcome to Clerc</string>
     <string name="login_welcome_description">Scan items and pay directly within the app. Clerc makes shopping easy, fun, and efficient.</string>
+    <!--Home Activity-->
     <string name="main_activity_top_bar_title">Clerc</string>
-    <string name="main_activity_start_shopping_button">Start Shopping</string>
-    <string name="main_activity_no_txns_description"><![CDATA[Clerc makes shopping fast & easy. Your past transactions will appear here.]]></string>
+    <string name="main_activity_start_shopping_button">Scan Store Barcode</string>
+    <string name="main_activity_no_txns_description">Clerc makes shopping fast &amp; easy. Your past transactions will appear here.</string>
     <string name="main_activity_past_purchases_header">Past Purchases</string>
+    <!--Generics-->
+    <string name="subtotal_label">Subtotal:</string>
+    <string name="taxes_label">Taxes:</string>
+    <string name="payment_success_summary_header">Summary</string>
+    <string name="cart_heading_label">CART</string>
+    <string name="cost_summary_total_label">Total:</string>
+    <string name="cancel">Cancel</string>
+    <string name="items_heading_label">Items</string>
 </resources>

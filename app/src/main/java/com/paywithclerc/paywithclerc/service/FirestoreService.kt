@@ -156,7 +156,8 @@ object FirestoreService {
      *
      * onResult -> (success, error object) determines whether the write transaction was a success
      */
-    fun writeTransaction(customerId: String, storeId: String, amount: Double,
+    fun writeTransaction(customerId: String, storeId: String,
+                         costBeforeTaxes: Double, taxes: Double, costAfterTaxes: Double,
                          items: List<Product>, quantities: List<Int>, txnId: String,
                          onResult: (Boolean, Error?) -> Unit) {
 
@@ -181,7 +182,9 @@ object FirestoreService {
         txnData["customer_id"] = customerId
         txnData["store_id"] = storeId
         txnData["currency"] = StripeConstants.DEFAULT_CURRENCY
-        txnData["amount"] = amount
+        txnData["amount"] = costAfterTaxes
+        txnData["amount_before_taxes"] = costBeforeTaxes
+        txnData["taxes"] = taxes
         txnData["date"] = Timestamp(Date())
         txnData["items"] = itemsData
 
