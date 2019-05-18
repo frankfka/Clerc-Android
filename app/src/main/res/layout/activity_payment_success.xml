@@ -77,6 +77,20 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp">
 
+                <Button
+                        android:text="@string/payment_success_email_receipt_label"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/paymentSuccessEmailReceiptButton"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textSize="@dimen/normalFontSize"
+                        android:background="@drawable/bottom_button_primary"
+                        android:textColor="@color/colorTextWhite"/>
+
                 <TextView
                         android:text="@string/payment_success_summary_header"
                         android:layout_width="match_parent"
@@ -116,7 +130,8 @@
                         app:layout_constraintHorizontal_bias="0.0"
                         android:layout_marginTop="8dp"
                         app:layout_constraintTop_toBottomOf="@+id/paymentSuccessStoreNameText"
-                        app:layout_constraintBottom_toBottomOf="parent">
+                        android:layout_marginBottom="16dp"
+                        app:layout_constraintBottom_toTopOf="@+id/paymentSuccessEmailReceiptButton">
 
                     <TextView
                             android:text="@string/cost_summary_total_label"

@@ -22,6 +22,7 @@
     <string name="payment_success_header">That was easy.</string>
     <string name="payment_success_description">Your transaction was successfully completed. You\'re good to go!</string>
     <string name="payment_success_dismiss_button">Done</string>
+    <string name="payment_success_email_receipt_label">Email a Receipt</string>
     <!--Login Activity-->
     <string name="login_welcome_header">Welcome to Clerc</string>
     <string name="login_welcome_description">Scan items and pay directly within the app. Clerc makes shopping easy, fun, and efficient.</string>

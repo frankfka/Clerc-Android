@@ -161,6 +161,16 @@ class CheckoutActivity : AppCompatActivity() {
                                 }
                                 // Add to Realm
                                 RealmService.addTransaction(txnId, store!!.name, totalAfterTaxes, StripeConstants.DEFAULT_CURRENCY)
+                                // Navigate to next activity
+                                val paymentSuccessIntent = Intent(this@CheckoutActivity, PaymentSuccessActivity::class.java)
+                                // Set flags to clear all previous activities - using bitwise OR
+                                paymentSuccessIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                // Pass the required items to the activity
+                                paymentSuccessIntent.putExtra(ActivityConstants.STORE_OBJ_KEY, store!!)
+                                paymentSuccessIntent.putParcelableArrayListExtra(ActivityConstants.ITEMS_KEY, ArrayList(items))
+                                paymentSuccessIntent.putIntegerArrayListExtra(ActivityConstants.QTYS_KEY, ArrayList(quantities))
+                                paymentSuccessIntent.putExtra(ActivityConstants.TXN_ID_KEY, txnId)
+                                startActivity(paymentSuccessIntent)
                             } else {
                                 // Errors handled elsewhere - just log
                                 Log.e(TAG, "Transaction failed with error: ${error?.message}")
@@ -278,13 +288,9 @@ class CheckoutActivity : AppCompatActivity() {
                 selectedPaymentId = data.selectedPaymentMethodId
 
                 when (paymentResult) {
-                    PaymentResultListener.SUCCESS -> { // Payment succeeded
-                        // Navigate to success activity
+                    PaymentResultListener.SUCCESS -> {
+                        // Payment succeeded
                         Log.i(TAG, "Payment was successful")
-                        val paymentSuccessIntent = Intent(this@CheckoutActivity, PaymentSuccessActivity::class.java)
-                        // Set flags to clear all previous activities - using bitwise OR
-                        paymentSuccessIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(paymentSuccessIntent)
                     }
                     PaymentResultListener.ERROR -> { // Payment failed
                         Log.e(TAG, "Payment failed")

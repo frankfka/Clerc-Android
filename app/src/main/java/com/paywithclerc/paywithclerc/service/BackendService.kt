@@ -18,6 +18,57 @@ object BackendService {
     const val TAG = "BackendService"
 
     /**
+     * Calls backend to send a receipt to the customer
+     *
+     * onResult -> success
+     */
+    fun emailReceipt(txnId: String, context: Context, requestTag: String? = null, onResult: (Boolean) -> (Unit)) {
+        // Get an instance of the networking service
+        val networkService = NetworkService.getInstance(context)
+        val currentCustomer = Customer.current
+
+        // Check that current customer exists
+        if (currentCustomer == null) {
+            Log.e(TAG, "No current customer!")
+            onResult(false)
+            return
+        }
+
+        // Get JWT, if successful, call backend to create an ephemeral key
+        JWT.getToken(context, requestTag) { success, jwt, error ->
+
+            if (success && jwt != null) {
+
+                val sendEmailParams = hashMapOf(
+                    "token" to jwt.token,
+                    "txn_id" to txnId,
+                    "customer_name" to (currentCustomer.name ?: ""),
+                    "customer_email" to (currentCustomer.email ?: "")
+                )
+
+                // JWT retrieved successfully
+                val sendEmailRequest = JsonObjectRequest(Request.Method.POST, BackendConstants.EMAIL_RECEIPT_URL, JSONObject(sendEmailParams),
+                    Response.Listener {
+                        onResult(true)
+                    },
+                    Response.ErrorListener {
+                        // Error from backend
+                        Log.e(TAG, "Backend network call errored while sending receipt: ${it.networkResponse}")
+                        onResult(false)
+                    })
+                // Add the request to the network queue
+                networkService.addToRequestQueue(sendEmailRequest, requestTag)
+
+            } else {
+                // JWT retrieval failed
+                Log.e(TAG, "Could not send email because JWT retrieval failed: $error")
+                onResult(false)
+            }
+
+        }
+    }
+
+    /**
      * Calls backend to create a new customer & passes its Stripe ID to the callback
      *
      * onResult -> success, customer ID, error
