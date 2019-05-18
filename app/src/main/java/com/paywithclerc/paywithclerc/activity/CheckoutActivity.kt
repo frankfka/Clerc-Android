@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ScrollView
 import androidx.annotation.Nullable
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants

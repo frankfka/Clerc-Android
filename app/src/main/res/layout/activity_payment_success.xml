@@ -69,7 +69,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="48dp"
                     app:layout_constraintTop_toBottomOf="@+id/paymentSuccessHeaderLayout"
                     android:id="@+id/paymentSuccessSummaryLayout"
                     app:layout_constraintStart_toStartOf="parent"

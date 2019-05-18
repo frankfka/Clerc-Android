@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants
@@ -13,6 +14,7 @@ import com.paywithclerc.paywithclerc.service.BackendService
 import com.paywithclerc.paywithclerc.service.UtilityService
 import com.paywithclerc.paywithclerc.service.ViewService
 import com.paywithclerc.paywithclerc.view.adapter.ItemListAdapter
+import kotlinx.android.synthetic.main.activity_checkout.*
 import kotlinx.android.synthetic.main.activity_payment_success.*
 
 class PaymentSuccessActivity : AppCompatActivity() {
@@ -78,16 +80,19 @@ class PaymentSuccessActivity : AppCompatActivity() {
         paymentSuccessEmailReceiptButton.setOnClickListener {
             // Start loading HUD
             val loadingHUD = ViewService.showLoadingHUD(this, paymentSuccessMainConstraintLayout)
+            // Disable email button
+            paymentSuccessEmailReceiptButton.isEnabled = false
             BackendService.emailReceipt(txnId!!, this, LOGTAG) { success ->
                 // End loading HUD
                 ViewService.dismissLoadingHUD(loadingHUD)
                 if (success) {
-                    // Show success & disable button
-                    paymentSuccessEmailReceiptButton.isEnabled = false
-                    // TODO show success popup dialog
+                    // Show success
+                    ViewService.showInfoDialog(this, "Email Receipt",
+                        "An email has been sent. If you do not see it in your inbox, please check your spam folder.")
                 } else {
-                    // Show error dialog
+                    // Show error dialog & reenable email button to try again
                     Log.e(LOGTAG, "Could not send email receipt")
+                    paymentSuccessEmailReceiptButton.isEnabled = true
                     ViewService.showErrorHUD(this, paymentSuccessMainConstraintLayout)
                 }
             }

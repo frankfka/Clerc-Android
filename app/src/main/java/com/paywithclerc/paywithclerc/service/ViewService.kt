@@ -2,19 +2,15 @@ package com.paywithclerc.paywithclerc.service
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.ClipDescription
 import android.content.Context
 import android.content.DialogInterface
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.paywithclerc.paywithclerc.R
-import com.paywithclerc.paywithclerc.activity.MainActivity
 import com.paywithclerc.paywithclerc.constant.ViewConstants
 import com.paywithclerc.paywithclerc.model.Product
 import com.paywithclerc.paywithclerc.view.hud.ErrorHUD
@@ -63,6 +59,28 @@ object ViewService {
      */
     fun dismissLoadingHUD(loadingHUD: LoadingHUD?) {
         loadingHUD?.removeFromParent()
+    }
+
+    /**
+     * Shows an info dialog - same as confirmation dialog but with only one button
+     */
+    fun showInfoDialog(activity: Activity, title: String, description: String) {
+        // Get the main content view
+        val viewGroup = activity.findViewById<ViewGroup>(R.id.content)
+        // Inflate our custom dialog within the activity
+        val dialogView = LayoutInflater.from(activity).inflate(R.layout.confirmation_dialog, viewGroup, false)
+        dialogView.findViewById<TextView>(R.id.confirmDialogTitle).text = title
+        dialogView.findViewById<TextView>(R.id.confirmDialogDescription).text = description
+        // Build the dialog & show
+        val alertDialog = AlertDialog.Builder(activity)
+            .setView(dialogView)
+            .setNeutralButton(activity.applicationContext.getString(R.string.dialog_dismiss), null)
+            .create()
+        // Show the dialog
+        alertDialog.show()
+        // Customize the button colors
+        alertDialog.getButton(Dialog.BUTTON_NEUTRAL)
+            ?.setTextColor(activity.resources.getColor(R.color.colorPrimary, null))
     }
 
     /**

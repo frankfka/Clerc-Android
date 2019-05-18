@@ -93,9 +93,12 @@ object FirestoreService {
                 if (document != null && document.data != null) {
                     val docData = document.data!!
                     val storeName = docData["name"] as String?
+                    val taxRate = docData["tax_rate"] as Double?
+                    val customSuccessMsg = docData["success_msg"] as String?
                     // Check that the fields are actually retrievable
                     if (storeName != null) {
-                        onResult(true, Store(id, storeName), null)
+                        val store = Store(id, storeName, taxRate ?: 0.0, customSuccessMsg)
+                        onResult(true, store, null)
                     } else {
                         onResult(false, null, Error("Store $id found but was missing parameters"))
                     }
