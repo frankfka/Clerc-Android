@@ -131,7 +131,7 @@ class ShoppingActivity : AppCompatActivity() {
             // Sanity check to make sure that returned product is actually in the cart
             if (productIndex >= 0) {
                 // Display dialog to edit quantity
-                ViewService.showEditItemDialog(this, product, quantities[items.indexOf(product)]) { newQty ->
+                ViewService.showEditWeighedItemDialog(this, product, quantities[items.indexOf(product)]) { newQty ->
                     if (newQty > 0) {
                         // Changing the quantity
                         quantities[productIndex] = newQty

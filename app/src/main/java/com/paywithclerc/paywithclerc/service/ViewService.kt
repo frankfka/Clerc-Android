@@ -4,12 +4,18 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.text.Editable
+import android.text.SpannableString
+import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.textfield.TextInputEditText
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ViewConstants
 import com.paywithclerc.paywithclerc.model.Product
@@ -114,14 +120,79 @@ object ViewService {
     }
 
     /**
-     * Shows an edit item dialog, used in ShoppingActivity
+     * Shows an edit weighed item dialog, used in ShoppingActivity
      */
-    fun showEditItemDialog(activity: Activity, product: Product, quantity: Int,
-                           onUpdate: (Int) -> (Unit)) {
+    fun showEditWeighedItemDialog(activity: Activity, product: Product, quantity: Int,
+                                  onUpdate: (Int) -> Unit) {
         // Get the main content view
         val viewGroup = activity.findViewById<ViewGroup>(R.id.content)
         // Inflate our custom dialog within the activity
-        val dialogView = LayoutInflater.from(activity).inflate(R.layout.edit_item_dialog, viewGroup, false)
+        val dialogView = LayoutInflater.from(activity).inflate(R.layout.edit_weighed_item_dialog, viewGroup, false)
+        // This is the actual dialog object
+        val dialog = AlertDialog.Builder(activity)
+            .setView(dialogView)
+            .create()
+        // Get the views
+        val productNameLabel = dialogView.findViewById<TextView>(R.id.editItemDialogProductName)
+        val totalCostLabel = dialogView.findViewById<TextView>(R.id.editItemDialogProductTotalCost)
+        val individualCostLabel = dialogView.findViewById<TextView>(R.id.editItemDialogProductIndividualCost)
+        val deleteButton = dialogView.findViewById<ImageButton>(R.id.editItemDialogDeleteButton)
+        val updateButton = dialogView.findViewById<TextView>(R.id.editItemDialogUpdateButton)
+        // Weighed item specific
+        val quantityInput = dialogView.findViewById<TextInputEditText>(R.id.editWeightItemWeightEditText)
+        val weightUnitLabel = dialogView.findViewById<TextView>(R.id.editWeighedItemWeightUnit)
+
+        var currentQuantity = quantity // Keeps track of current quantity
+
+        // Initialize the views
+        productNameLabel.text = product.name
+        val individualCost = product.cost
+        totalCostLabel.text = getFormattedCost(individualCost * currentQuantity)
+        // Weighed item specific
+        individualCostLabel.text = "${getFormattedCost(individualCost)} BLAH"
+        // TODO per unit label
+        weightUnitLabel.text = "BLAH"
+        quantityInput.setText(currentQuantity.toString())
+
+        // Initialize Listeners
+        quantityInput.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable?) {
+                val parsedDouble = s.toString().toDoubleOrNull()
+                if (parsedDouble != null) {
+                    currentQuantity = parsedDouble.toInt() // TODO remove toInt
+                    totalCostLabel.text = getFormattedCost(currentQuantity * individualCost)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        })
+        deleteButton.setOnClickListener {
+            // Call completion with 0 as quantity
+            onUpdate(0)
+            dialog.dismiss()
+        }
+        updateButton.setOnClickListener {
+            onUpdate(currentQuantity)
+            dialog.dismiss()
+        }
+
+        // Show the dialog
+        dialog.show()
+    }
+
+    /**
+     * Shows an edit item dialog, used in ShoppingActivity
+     */
+    fun showEditUnitItemDialog(activity: Activity, product: Product, quantity: Int,
+                               onUpdate: (Int) -> (Unit)) {
+        // Get the main content view
+        val viewGroup = activity.findViewById<ViewGroup>(R.id.content)
+        // Inflate our custom dialog within the activity
+        val dialogView = LayoutInflater.from(activity).inflate(R.layout.edit_unit_item_dialog, viewGroup, false)
         // This is the actual dialog object
         val dialog = AlertDialog.Builder(activity)
             .setView(dialogView)

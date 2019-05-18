@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:background="@android:color/white"
+              android:padding="24sp">
+
+    <ImageButton
+            android:layout_width="24sp"
+            android:layout_height="24sp"
+            app:srcCompat="@drawable/ic_delete"
+            android:id="@+id/editItemDialogDeleteButton"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp">
+
+        <TextView
+                tools:text="Broccoli"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editItemDialogProductName"
+                android:gravity="center"
+                android:textSize="@dimen/mediumFontSize"
+                android:textColor="@color/colorTextDark"/>
+
+        <TextView
+                tools:text="$2.99"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editItemDialogProductTotalCost"
+                android:gravity="center"
+                android:textSize="@dimen/largeFontSize"
+                android:textColor="@color/colorTextDark"
+                />
+
+        <TextView
+                tools:text="$2.99 /lb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editItemDialogProductIndividualCost"
+                android:gravity="center"
+                android:textSize="@dimen/smallFontSize"
+                android:textColor="@color/colorTextLight"/>
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/editWeighedItemWeightInputLayout"
+                android:layout_marginTop="16sp"
+                android:layout_marginBottom="16sp"
+                android:gravity="center"
+                android:paddingStart="32sp"
+                android:paddingEnd="32sp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/editWeighedItemWeightInput"
+                    app:hintEnabled="true"
+                    android:hint="@string/edit_item_enter_weight_hint"
+                    android:layout_marginEnd="16sp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:inputType="numberDecimal"
+                        android:id="@+id/editWeightItemWeightEditText"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editWeighedItemWeightUnit"
+                    android:textSize="@dimen/normalFontSize"
+                    android:textColor="@color/colorTextLight"
+                    tools:text="lb"/>
+
+        </LinearLayout>
+
+        <Button
+                android:text="@string/edit_item_update"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/editItemDialogUpdateButton"
+                android:background="@drawable/primary_bg_button_with_radius"
+                android:textColor="@color/colorTextWhite"
+                android:layout_weight="1"
+                android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>
