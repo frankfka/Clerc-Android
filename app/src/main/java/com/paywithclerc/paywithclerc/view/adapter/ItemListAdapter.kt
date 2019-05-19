@@ -44,7 +44,7 @@ class ItemListAdapter(private val items: List<Product>, private val quantities: 
         val product = items[position]
         val quantity = quantities[position]
         itemNameLabel.text = product.name
-        quantityLabel.text = "${ViewService.getFormattedCost(product.cost)} x $quantity"
+        quantityLabel.text = "${ViewService.getFormattedCost(product.cost)} ${product.priceUnit.perUnitString} x $quantity"
         costLabel.text = ViewService.getFormattedCost(product.cost * quantity)
         // Set listener for on-click
         rootView.setOnClickListener {

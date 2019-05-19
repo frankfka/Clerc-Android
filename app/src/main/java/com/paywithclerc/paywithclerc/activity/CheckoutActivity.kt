@@ -77,6 +77,11 @@ class CheckoutActivity : AppCompatActivity() {
             initializeUI()
             // Update UI
             updateUI()
+            // BUG: Need to scroll to top
+            checkoutNestedScrollView.post {
+                checkoutNestedScrollView.fling(0)
+                checkoutNestedScrollView.scrollTo(0,0)
+            }
         } else {
             // Something failed
             Log.e(TAG, "Initialization of checkout failed. Either payment session did not initialize or items/qtys did not pass correctly")

@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ViewConstants
 import com.paywithclerc.paywithclerc.model.Product
+import com.paywithclerc.paywithclerc.model.Transaction
 import com.paywithclerc.paywithclerc.view.hud.ErrorHUD
 import com.paywithclerc.paywithclerc.view.hud.LoadingHUD
 import com.paywithclerc.paywithclerc.view.hud.SuccessHUD
@@ -119,6 +120,7 @@ object ViewService {
         }
     }
 
+    // TODO a lot of this dialog stuff is similar - perhaps refactor
     /**
      * Shows an edit weighed item dialog, used in ShoppingActivity
      */
@@ -149,7 +151,7 @@ object ViewService {
         val individualCost = product.cost
         totalCostLabel.text = getFormattedCost(individualCost * currentQuantity)
         // Weighed item specific
-        individualCostLabel.text = "${getFormattedCost(individualCost)} /${product.priceUnit.displayString}"
+        individualCostLabel.text = "${getFormattedCost(individualCost)} ${product.priceUnit.perUnitString}"
         weightUnitLabel.text = product.priceUnit.displayString
         quantityInput.setText(currentQuantity.toString())
 
@@ -210,11 +212,10 @@ object ViewService {
         val quantityStepper = dialogView.findViewById<NumberStepper>(R.id.editItemDialogNumberStepper)
         // Initialize the views
         productNameLabel.text = product.name
-        // TODO This stuff should probably be done in a constructor - but how?
         quantityStepper.count = quantity
         val individualCost = product.cost
         totalCostLabel.text = getFormattedCost(individualCost * quantity)
-        individualCostLabel.text = "${getFormattedCost(individualCost)} ea."
+        individualCostLabel.text = "${getFormattedCost(individualCost)} ${product.priceUnit.perUnitString}"
         // Configure listeners
         quantityStepper.onValueChange = { newQty ->
             totalCostLabel.text = getFormattedCost(individualCost * newQty)
@@ -227,6 +228,37 @@ object ViewService {
         updateButton.setOnClickListener {
             onUpdate(quantityStepper.count)
             dialog.dismiss()
+        }
+        // Show the dialog
+        dialog.show()
+    }
+
+    /**
+     * Shows a transaction detail dialog
+     */
+    fun showTxnDetailDialog(activity: Activity, txn: Transaction,
+                            onEmailDispatched: (Dialog, Boolean) -> Unit) {
+        // Get the main content view
+        val viewGroup = activity.findViewById<ViewGroup>(R.id.content)
+        // Inflate our custom dialog within the activity
+        val dialogView = LayoutInflater.from(activity).inflate(R.layout.txn_detail_dialog, viewGroup, false)
+        // This is the actual dialog object
+        val dialog = AlertDialog.Builder(activity)
+            .setView(dialogView)
+            .create()
+        // Get the views
+        val storeNameLabel = dialogView.findViewById<TextView>(R.id.txnDetailStoreName)
+        val totalCostLabel = dialogView.findViewById<TextView>(R.id.txnDetailTotalCost)
+        val dateLabel = dialogView.findViewById<TextView>(R.id.txnDetailDate)
+        val emailReceiptButton = dialogView.findViewById<TextView>(R.id.txnDetailEmailReceipt)
+        // Initialize the views
+        storeNameLabel.text = txn.storeName
+        totalCostLabel.text = getFormattedCost(txn.amount)
+        dateLabel.text = getFormattedDate(txn.txnDate)
+        emailReceiptButton.setOnClickListener {
+            BackendService.emailReceipt(txn.txnId, activity.applicationContext, null) { success ->
+                onEmailDispatched(dialog, success)
+            }
         }
         // Show the dialog
         dialog.show()

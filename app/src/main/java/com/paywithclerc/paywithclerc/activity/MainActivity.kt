@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializeUI() {
         // Initialize the RecyclerView - will be empty if no transactions are found
-        txnsListAdapter = TransactionsListAdapter(pastTransactions) { } // Don't need anything on click
+        txnsListAdapter = TransactionsListAdapter(pastTransactions) { } // Do nothing on tap
         mainPrimaryPurchasesRecycler.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = txnsListAdapter
@@ -66,6 +66,10 @@ class MainActivity : AppCompatActivity() {
         startShoppingButton.setOnClickListener {
             val intent = Intent(this, BarcodeScannerActivity::class.java)
             startActivityForResult(intent, ActivityConstants.STORE_BARCODE_INTENT)
+        }
+        mainPrimaryTransactionsViewAllButton.setOnClickListener {
+            val intent = Intent(this, AllTransactionsActivity::class.java)
+            startActivity(intent)
         }
         // Run update UI
         updateUI()

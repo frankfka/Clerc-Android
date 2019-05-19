@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:background="@android:color/white"
+              android:padding="24sp">
+
+    <TextView
+            tools:text="Grocery Store"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txnDetailStoreName"
+            android:gravity="center"
+            android:textSize="@dimen/mediumFontSize"
+            android:textColor="@color/colorTextDark"/>
+
+    <TextView
+            tools:text="$3.44"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txnDetailTotalCost"
+            android:gravity="center"
+            android:textSize="@dimen/largeFontSize"
+            android:textColor="@color/colorTextDark"
+            />
+
+    <TextView
+            tools:text="May 27, 2019"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txnDetailDate"
+            android:gravity="center"
+            android:textSize="@dimen/smallFontSize"
+            android:textColor="@color/colorTextLight"/>
+
+    <TextView
+            android:text="@string/payment_success_email_receipt_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txnDetailEmailReceipt"
+            android:layout_marginTop="16sp"
+            android:textColor="@color/colorTextWhite"
+            android:background="@drawable/bottom_button_primary"
+            android:textSize="@dimen/normalFontSize"
+            android:padding="8sp"
+            android:gravity="center"/>
+
+</LinearLayout>

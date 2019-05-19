@@ -37,6 +37,11 @@ class PaymentSuccessActivity : AppCompatActivity() {
         // If anything was not passed, just go to home
         if (store != null && items != null && quantities != null && txnId != null) {
             initializeUI()
+            // BUG: Need to scroll to top
+            paymentSuccessNestedScrollView.post {
+                paymentSuccessNestedScrollView.fling(0)
+                paymentSuccessNestedScrollView.scrollTo(0,0)
+            }
         } else {
             Log.e(TAG, "Required intent extras were not passed")
             goToHome()

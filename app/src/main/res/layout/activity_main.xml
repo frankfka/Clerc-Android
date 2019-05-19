@@ -61,24 +61,51 @@
                     android:padding="16sp"
                     android:id="@+id/mainPrimaryNestedScrollLinearLayout">
 
-                <TextView
-                        android:text="@string/main_activity_past_purchases_header"
+                <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/mainPrimaryTransactionsHeader"
-                        android:layout_marginTop="16sp"
-                        android:textSize="@dimen/mediumFontSize"
-                        android:textColor="@color/colorTextDark"
-                        android:textStyle="bold"/>
+                        android:id="@+id/mainPastPurchasesLinearLayout"
+                        android:layout_marginTop="16sp">
 
-                <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/mainPrimaryPurchasesRecycler"
-                        android:layout_marginTop="4sp"
-                        android:nestedScrollingEnabled="false"/>
+                    <TextView
+                            android:text="@string/main_activity_past_purchases_header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/mainPrimaryTransactionsHeader"
+                            android:textSize="@dimen/mediumFontSize"
+                            android:textColor="@color/colorTextDark"
+                            android:textStyle="bold"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/mainPrimaryPurchasesRecycler"
+                            android:layout_marginTop="4sp"
+                            android:nestedScrollingEnabled="false">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                    <TextView
+                            android:text="@string/main_activity_view_all_transactions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/mainPrimaryTransactionsViewAllButton"
+                            android:paddingStart="16sp"
+                            android:paddingEnd="16sp"
+                            android:paddingTop="8sp"
+                            android:paddingBottom="8sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/colorTextWhite"
+                            android:textSize="@dimen/normalFontSize"
+                            android:background="@drawable/bottom_button_primary"
+                            android:layout_marginTop="8sp"/>
+
+                </LinearLayout>
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

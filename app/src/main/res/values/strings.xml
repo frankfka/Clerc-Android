@@ -31,6 +31,9 @@
     <string name="main_activity_start_shopping_button">Scan Store Barcode</string>
     <string name="main_activity_no_txns_description">Clerc makes shopping fast &amp; easy. Your past transactions will appear here.</string>
     <string name="main_activity_past_purchases_header">Past Purchases</string>
+    <string name="main_activity_view_all_transactions">View All</string>
+    <!--All Transactions-->
+    <string name="all_txns_title">Transactions</string>
     <!--Edit Item Dialog-->
     <string name="edit_item_update">Update</string>
     <string name="edit_item_enter_weight_hint">Enter Weight of Item</string>
