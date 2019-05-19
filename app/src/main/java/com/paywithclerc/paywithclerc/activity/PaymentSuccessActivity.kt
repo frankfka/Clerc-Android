@@ -21,7 +21,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
 
     private var store: Store? = null
     private var items: List<Product>? = null
-    private var quantities: List<Int>? = null
+    private var quantities: List<Double>? = null
     private var txnId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,14 +31,14 @@ class PaymentSuccessActivity : AppCompatActivity() {
         // Get the extras to populate the views
         store = intent.getParcelableExtra(ActivityConstants.STORE_OBJ_KEY)
         items = intent.getParcelableArrayListExtra(ActivityConstants.ITEMS_KEY)
-        quantities = intent.getIntegerArrayListExtra(ActivityConstants.QTYS_KEY)
+        quantities = intent.getSerializableExtra(ActivityConstants.QTYS_KEY) as List<Double>
         txnId = intent.getStringExtra(ActivityConstants.TXN_ID_KEY)
 
         // If anything was not passed, just go to home
         if (store != null && items != null && quantities != null && txnId != null) {
             initializeUI()
         } else {
-            Log.e(LOGTAG, "Required intent extras were not passed")
+            Log.e(TAG, "Required intent extras were not passed")
             goToHome()
         }
 
@@ -82,7 +82,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
             val loadingHUD = ViewService.showLoadingHUD(this, paymentSuccessMainConstraintLayout)
             // Disable email button
             paymentSuccessEmailReceiptButton.isEnabled = false
-            BackendService.emailReceipt(txnId!!, this, LOGTAG) { success ->
+            BackendService.emailReceipt(txnId!!, this, TAG) { success ->
                 // End loading HUD
                 ViewService.dismissLoadingHUD(loadingHUD)
                 if (success) {
@@ -91,7 +91,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
                         "An email has been sent. If you do not see it in your inbox, please check your spam folder.")
                 } else {
                     // Show error dialog & reenable email button to try again
-                    Log.e(LOGTAG, "Could not send email receipt")
+                    Log.e(TAG, "Could not send email receipt")
                     paymentSuccessEmailReceiptButton.isEnabled = true
                     ViewService.showErrorHUD(this, paymentSuccessMainConstraintLayout)
                 }
@@ -108,7 +108,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val LOGTAG = "PaymentSuccessActivity"
+        const val TAG = "PaymentSuccessActivity"
     }
 
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.paywithclerc.paywithclerc.R
 import com.paywithclerc.paywithclerc.constant.ActivityConstants
 import com.paywithclerc.paywithclerc.model.Error
+import com.paywithclerc.paywithclerc.model.PriceUnit
 import com.paywithclerc.paywithclerc.model.Product
 import com.paywithclerc.paywithclerc.model.Store
 import com.paywithclerc.paywithclerc.service.FirestoreService
@@ -22,7 +23,7 @@ class ShoppingActivity : AppCompatActivity() {
 
     private var store: Store? = null
     private var items: MutableList<Product> = ArrayList()
-    private var quantities: MutableList<Int> = ArrayList()
+    private var quantities: MutableList<Double> = ArrayList()
     private var itemListAdapter: ItemListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,20 +86,41 @@ class ShoppingActivity : AppCompatActivity() {
                 if (success && product != null) {
                     // Item scanned successfully
                     Log.i(TAG, "Product with ID ${product.id} found, name: ${product.name}")
-                    // See if the item has already been scanned - in which case just increment quantity
-                    val scannedProductIndex = items.indexOf(product)
-                    if (scannedProductIndex == -1) {
-                        // Item does not yet exist in the cart, add it
-                        items.add(product)
-                        quantities.add(1)
+                    // First switch depending on the unit type
+                    if (product.priceUnit == PriceUnit.UNIT) {
+                        // See if the item has already been scanned - in which case just increment quantity
+                        val scannedProductIndex = items.indexOf(product)
+                        if (scannedProductIndex == -1) {
+                            // Item does not yet exist in the cart, add it
+                            items.add(product)
+                            quantities.add(1.0)
+                        } else {
+                            // Item exists in cart, increment quantity
+                            quantities[scannedProductIndex] = quantities[scannedProductIndex] + 1
+                        }
+                        // Show success dialog
+                        ViewService.showSuccessHUD(this, shoppingParentConstraintLayout, "Item Added")
+                        updateUI()
                     } else {
-                        // Item exists in cart, increment quantity
-                        quantities.set(scannedProductIndex, quantities[scannedProductIndex] + 1)
+                        // Weighed item - always show dialog
+                        // This is quantity - default to 1 - if we find item in the cart, update this
+                        var weightQty = 1.0
+                        val isInCart = items.indexOf(product) != -1
+                        if (isInCart) {
+                            weightQty = quantities[items.indexOf(product)]
+                        }
+                        ViewService.showEditWeighedItemDialog(this, product, weightQty) { specifiedQty ->
+                            if (isInCart) {
+                                quantities[items.indexOf(product)] = specifiedQty
+                            } else {
+                                items.add(product)
+                                quantities.add(specifiedQty)
+                            }
+                            // Show success dialog and update UI
+                            ViewService.showSuccessHUD(this, shoppingParentConstraintLayout, "Item Added")
+                            updateUI()
+                        }
                     }
-                    // Show success dialog
-                    ViewService.showSuccessHUD(this, shoppingParentConstraintLayout, "Item Added")
-                    // Update UI
-                    updateUI()
                 } else {
                     Log.e(TAG, "Error while getting item with barcode $barcode from store ID ${store?.id}, Error: ${error?.message}")
                     // Show error HUD
@@ -130,17 +152,35 @@ class ShoppingActivity : AppCompatActivity() {
             val productIndex = items.indexOf(product)
             // Sanity check to make sure that returned product is actually in the cart
             if (productIndex >= 0) {
-                // Display dialog to edit quantity
-                ViewService.showEditWeighedItemDialog(this, product, quantities[items.indexOf(product)]) { newQty ->
-                    if (newQty > 0) {
-                        // Changing the quantity
-                        quantities[productIndex] = newQty
-                    } else {
-                        // Remove the item
-                        quantities.removeAt(productIndex)
-                        items.removeAt(productIndex)
+                // Switch depending on whether the product is by unit or by weight
+                // TODO these are very similar, see if we can simplify somehow
+                if (product.priceUnit == PriceUnit.UNIT) {
+                    // Display dialog to edit unit quantity
+                    // IMPORTANT - we cast to int here to ensure that the quantity here is always a whole number
+                    ViewService.showEditUnitItemDialog(this, product, quantities[items.indexOf(product)].toInt()) { newQty ->
+                        if (newQty > 0) {
+                            // Changing the quantity
+                            quantities[productIndex] = newQty.toDouble()
+                        } else {
+                            // Remove the item
+                            quantities.removeAt(productIndex)
+                            items.removeAt(productIndex)
+                        }
+                        updateUI()
                     }
-                    updateUI()
+                } else {
+                    // Display dialog to edit double quantity
+                    ViewService.showEditWeighedItemDialog(this, product, quantities[items.indexOf(product)]) { newQty ->
+                        if (newQty > 0) {
+                            // Changing the quantity
+                            quantities[productIndex] = newQty
+                        } else {
+                            // Remove the item
+                            quantities.removeAt(productIndex)
+                            items.removeAt(productIndex)
+                        }
+                        updateUI()
+                    }
                 }
             } else {
                 Log.e(TAG, "Clicked product is somehow not in the shopping cart")
@@ -160,7 +200,7 @@ class ShoppingActivity : AppCompatActivity() {
             // Add the store, items & quantities to the intent
             intent.putExtra(ActivityConstants.STORE_OBJ_KEY, store!!)
             intent.putParcelableArrayListExtra(ActivityConstants.ITEMS_KEY, ArrayList(items))
-            intent.putIntegerArrayListExtra(ActivityConstants.QTYS_KEY, ArrayList(quantities))
+            intent.putExtra(ActivityConstants.QTYS_KEY, ArrayList(quantities))
             startActivity(intent)
         }
         shoppingClearCartButton.setOnClickListener {

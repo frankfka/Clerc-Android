@@ -122,8 +122,8 @@ object ViewService {
     /**
      * Shows an edit weighed item dialog, used in ShoppingActivity
      */
-    fun showEditWeighedItemDialog(activity: Activity, product: Product, quantity: Int,
-                                  onUpdate: (Int) -> Unit) {
+    fun showEditWeighedItemDialog(activity: Activity, product: Product, quantity: Double,
+                                  onUpdate: (Double) -> Unit) {
         // Get the main content view
         val viewGroup = activity.findViewById<ViewGroup>(R.id.content)
         // Inflate our custom dialog within the activity
@@ -149,18 +149,22 @@ object ViewService {
         val individualCost = product.cost
         totalCostLabel.text = getFormattedCost(individualCost * currentQuantity)
         // Weighed item specific
-        individualCostLabel.text = "${getFormattedCost(individualCost)} BLAH"
-        // TODO per unit label
-        weightUnitLabel.text = "BLAH"
+        individualCostLabel.text = "${getFormattedCost(individualCost)} /${product.priceUnit.displayString}"
+        weightUnitLabel.text = product.priceUnit.displayString
         quantityInput.setText(currentQuantity.toString())
 
         // Initialize Listeners
         quantityInput.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable?) {
-                val parsedDouble = s.toString().toDoubleOrNull()
+                // Text empty = 0, otherwise try parsing
+                val parsedDouble = if (s.toString().isEmpty()) {
+                    0.0
+                } else {
+                    s.toString().toDoubleOrNull()
+                }
                 if (parsedDouble != null) {
-                    currentQuantity = parsedDouble.toInt() // TODO remove toInt
+                    currentQuantity = parsedDouble
                     totalCostLabel.text = getFormattedCost(currentQuantity * individualCost)
                 }
             }
@@ -172,7 +176,7 @@ object ViewService {
         })
         deleteButton.setOnClickListener {
             // Call completion with 0 as quantity
-            onUpdate(0)
+            onUpdate(0.0)
             dialog.dismiss()
         }
         updateButton.setOnClickListener {

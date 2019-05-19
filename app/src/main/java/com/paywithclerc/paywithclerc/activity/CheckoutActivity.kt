@@ -38,8 +38,8 @@ class CheckoutActivity : AppCompatActivity() {
     private var shouldEnableEditPayment = true
 
     // Passed from prior activity
-    private var items: MutableList<Product>? = null
-    private var quantities: MutableList<Int>? = null
+    private var items: List<Product>? = null
+    private var quantities: List<Double>? = null
     private var store: Store? = null
     private var totalAfterTaxes: Double = 0.0
     private var totalBeforeTaxes: Double = 0.0
@@ -60,12 +60,12 @@ class CheckoutActivity : AppCompatActivity() {
         // Get the passed cart info
         store = intent.getParcelableExtra(ActivityConstants.STORE_OBJ_KEY)
         items = intent.getParcelableArrayListExtra(ActivityConstants.ITEMS_KEY)
-        quantities = intent.getIntegerArrayListExtra(ActivityConstants.QTYS_KEY)
+        quantities = intent.getSerializableExtra(ActivityConstants.QTYS_KEY) as List<Double> // TODO make this safer?
         // First thing to do is to set up the Payment Session - this is done synchronously
         setupPaymentSession()
         // Check that we have a success, otherwise just finish the activity
         if (store != null && paymentSession != null && items != null && quantities != null
-            && items!!.size > 0 && quantities!!.size > 0 && items!!.size == quantities!!.size) {
+            && items!!.isNotEmpty() && quantities!!.isNotEmpty() && items!!.size == quantities!!.size) {
             // Pass total totalAfterTaxes to the payment session
             totalBeforeTaxes = UtilityService.getTotalCost(items!!, quantities!!)
             taxes = UtilityService.getTaxes(totalBeforeTaxes, store!!)
@@ -169,7 +169,7 @@ class CheckoutActivity : AppCompatActivity() {
                                 // Pass the required items to the activity
                                 paymentSuccessIntent.putExtra(ActivityConstants.STORE_OBJ_KEY, store!!)
                                 paymentSuccessIntent.putParcelableArrayListExtra(ActivityConstants.ITEMS_KEY, ArrayList(items))
-                                paymentSuccessIntent.putIntegerArrayListExtra(ActivityConstants.QTYS_KEY, ArrayList(quantities))
+                                paymentSuccessIntent.putExtra(ActivityConstants.QTYS_KEY, ArrayList(quantities))
                                 paymentSuccessIntent.putExtra(ActivityConstants.TXN_ID_KEY, txnId)
                                 startActivity(paymentSuccessIntent)
                             } else {

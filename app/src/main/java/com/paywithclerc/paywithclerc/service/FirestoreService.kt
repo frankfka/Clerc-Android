@@ -7,10 +7,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.paywithclerc.paywithclerc.constant.FirestoreConstants
 import com.paywithclerc.paywithclerc.constant.StripeConstants
-import com.paywithclerc.paywithclerc.model.Customer
-import com.paywithclerc.paywithclerc.model.Error
-import com.paywithclerc.paywithclerc.model.Product
-import com.paywithclerc.paywithclerc.model.Store
+import com.paywithclerc.paywithclerc.model.*
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.cos
@@ -131,13 +128,21 @@ object FirestoreService {
                     val productName = docData["name"] as String?
                     val firestoreCost = docData["cost"]
                     val currency = docData["currency"] as String?
+                    val priceUnitString = docData["price_unit"] as String?
                     if (productName != null && firestoreCost != null && currency != null) {
+                        // Bug - firestore sometimes returns numbers as Long's
                         val cost: Double = if (firestoreCost is Long) {
                             firestoreCost.toDouble()
                         } else {
                             firestoreCost as Double
                         }
-                        val scannedProduct = Product(productId, productName, cost, currency)
+                        var priceUnit: PriceUnit = PriceUnit.UNIT
+                        try {
+                            priceUnit = PriceUnit.valueOf(priceUnitString?.toUpperCase() ?: "UNIT")
+                        } catch (e: IllegalArgumentException)  {
+                            Log.e(TAG, "Price unit from firebase could not be parsed for product ID: $productId from store ID $storeId: $priceUnitString")
+                        }
+                        val scannedProduct = Product(productId, productName, cost, currency, priceUnit)
                         onResult(true, scannedProduct, null)
                     } else {
                         Log.e(TAG, "Product document $productId found for store $storeId but was missing fields")
@@ -161,7 +166,7 @@ object FirestoreService {
      */
     fun writeTransaction(customerId: String, storeId: String,
                          costBeforeTaxes: Double, taxes: Double, costAfterTaxes: Double,
-                         items: List<Product>, quantities: List<Int>, txnId: String,
+                         items: List<Product>, quantities: List<Double>, txnId: String,
                          onResult: (Boolean, Error?) -> Unit) {
 
         // Create document data
@@ -175,6 +180,7 @@ object FirestoreService {
                 "id" to item.id,
                 "name" to item.name,
                 "cost" to item.cost,
+                "price_unit" to item.priceUnit.displayString,
                 "quantity" to quantities[index]
             )
             itemsData.add(itemData)

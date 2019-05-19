@@ -12,7 +12,7 @@ import com.paywithclerc.paywithclerc.service.ViewService
 /**
  * Our Adapter is used by the RecyclerView and is a subclass of the RecyclerView Adapter
  */
-class ItemListAdapter(private val items: List<Product>, private val quantities: List<Int>, private val onItemClick: (Product) -> (Unit))
+class ItemListAdapter(private val items: List<Product>, private val quantities: List<Double>, private val onItemClick: (Product) -> (Unit))
     : RecyclerView.Adapter<ItemListAdapter.ItemListViewHolder>() {
 
     /**
