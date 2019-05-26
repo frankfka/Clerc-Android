@@ -29,7 +29,6 @@ class EphemeralKeyService(val context: Context, private val requestTag: String? 
                 onResult(true, null)
             } else {
                 Log.e(TAG, "Ephemeral key retrieval failed with error: ${error?.message}")
-                // TODO call onKeyUpdateFailure
                 keyUpdateListener.onKeyUpdateFailure(0, error?.message ?: "") // TODO Does this work?
                 onResult(false, error)
             }
@@ -38,7 +37,7 @@ class EphemeralKeyService(val context: Context, private val requestTag: String? 
     }
 
     companion object {
-        const val TAG = "EphemeralKeyService"
+        const val TAG = "PAYWITHCLERCAPP: EphemeralKeyService"
     }
 
 }

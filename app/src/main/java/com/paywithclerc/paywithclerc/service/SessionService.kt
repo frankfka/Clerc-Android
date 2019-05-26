@@ -15,7 +15,7 @@ import com.stripe.android.PaymentSessionData
 
 object SessionService {
 
-    const val TAG = "SessionService"
+    const val TAG = "PAYWITHCLERCAPP: SessionService"
 
     /**
      * Loads a customer session including the Stripe session

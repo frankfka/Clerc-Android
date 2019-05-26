@@ -3,6 +3,8 @@ package com.paywithclerc.paywithclerc.service
 import android.content.Context
 import com.android.volley.Request
 import com.android.volley.RequestQueue
+import com.android.volley.RetryPolicy
+import com.android.volley.VolleyError
 import com.android.volley.toolbox.Volley
 
 /**
@@ -33,7 +35,6 @@ class NetworkService constructor(context: Context) {
         if (tag != null) {
             req.tag = tag
         }
-        // TODO set retry policy
         requestQueue.add(req)
     }
 

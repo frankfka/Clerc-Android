@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseUser
 
 object FirebaseAuthService {
 
-    private const val TAG = "FirestoreService"
+    private const val TAG = "PAYWITHCLERCAPP: FirestoreService"
 
     /**
      * Returns the current signed-in user or null

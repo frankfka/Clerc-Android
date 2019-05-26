@@ -113,7 +113,7 @@ class PaymentSuccessActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "PaymentSuccessActivity"
+        const val TAG = "PAYWITHCLERCAPP: PaymentSuccessActivity"
     }
 
 }

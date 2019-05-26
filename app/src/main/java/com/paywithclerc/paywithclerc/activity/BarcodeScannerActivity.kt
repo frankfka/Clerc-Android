@@ -40,8 +40,6 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
             }
         }
 
-    // TODO DEAL WITH DENIED PERMISSIONS
-
     /**
      * Initialization for the activity
      */
@@ -178,7 +176,7 @@ class BarcodeScannerActivity : AppCompatActivity(), ActivityCompat.OnRequestPerm
 
     // Static variables
     companion object {
-        private const val TAG = "BarcodeScannerActivity"
+        private const val TAG = "PAYWITHCLERCAPP: BarcodeScannerActivity"
         private const val PERMISSION_REQUESTS = 1
 
         private fun isPermissionGranted(context: Context, permission: String): Boolean {

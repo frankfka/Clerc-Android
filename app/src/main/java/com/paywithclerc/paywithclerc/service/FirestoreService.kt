@@ -10,11 +10,10 @@ import com.paywithclerc.paywithclerc.constant.StripeConstants
 import com.paywithclerc.paywithclerc.model.*
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.math.cos
 
 object FirestoreService {
 
-    private const val TAG = "FirestoreService"
+    private const val TAG = "PAYWITHCLERCAPP: FirestoreService"
 
     /**
      * Saves a user to firestore and creates a new Stripe customer if one does not exist

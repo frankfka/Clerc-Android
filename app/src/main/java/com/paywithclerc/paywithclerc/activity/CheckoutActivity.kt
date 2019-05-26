@@ -354,7 +354,7 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "CheckoutActivity"
+        const val TAG = "PAYWITHCLERCAPP: CheckoutActivity"
     }
 
 }

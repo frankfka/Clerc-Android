@@ -11,7 +11,7 @@ data class JWT(val token: String) {
     // All methods are wrapped in a companion object to make it static
     companion object {
 
-        private const val TAG = "JWT"
+        private const val TAG = "PAYWITHCLERCAPP: JWT"
         private var current: JWT? = null
         private var lastUpdated: Instant? = null
         private var expiryTime: Duration = Duration.ofSeconds(30L)

@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "MainActivity"
-        private const val NUM_PAST_TXNS = 10L // TODO Hack until we decide what to do with the home screen
+        private const val TAG = "PAYWITHCLERCAPP: MainActivity"
+        private const val NUM_PAST_TXNS = 10L
     }
 }

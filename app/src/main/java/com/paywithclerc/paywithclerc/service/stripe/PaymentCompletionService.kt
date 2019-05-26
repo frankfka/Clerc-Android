@@ -8,6 +8,8 @@ import com.paywithclerc.paywithclerc.service.BackendService
 import com.stripe.android.PaymentCompletionProvider
 import com.stripe.android.PaymentResultListener
 import com.stripe.android.PaymentSessionData
+import java.time.Duration
+import java.time.Instant
 
 /**
  * Subclass of PaymentCompletionProvider required for Stripe SDK
@@ -19,11 +21,20 @@ class PaymentCompletionService(val context: Context, val store: Store, val reque
 
     override fun completePayment(data: PaymentSessionData, listener: PaymentResultListener) {
 
+        if (lastRequestTime != null && lastRequestTime!!.plus(bufferDuration).isAfter(Instant.now())) {
+            Log.e(TAG, "ERROR: Attempted to complete payment multiple times within buffer!")
+            listener.onPaymentResult(PaymentResultListener.ERROR)
+            onResult(false, null, Error("Too many requests to charge within buffer"))
+        }
+        lastRequestTime = Instant.now()
+
         // Do state checking just in case
         if (data.isPaymentReadyToCharge
             && data.selectedPaymentMethodId != null
             && data.paymentResult != PaymentResultListener.SUCCESS
             && data.cartTotal > 0) {
+
+            Log.e(TAG, "CHARGING: ${data.paymentResult}")
 
             // Now check that we have all that's needed to call backend
             BackendService.completeCharge(context, data.cartTotal, store, data.selectedPaymentMethodId!!, requestTag) { success, txnId, error ->
@@ -34,8 +45,7 @@ class PaymentCompletionService(val context: Context, val store: Store, val reque
                     onResult(success, txnId, error)
                 } else {
                     Log.e(TAG, "Charge was not successful. Error: ${error?.message}")
-                    listener.onPaymentResult(PaymentResultListener.ERROR
-                    )
+                    listener.onPaymentResult(PaymentResultListener.ERROR)
                     onResult(success, txnId, error)
                 }
             }
@@ -46,7 +56,9 @@ class PaymentCompletionService(val context: Context, val store: Store, val reque
     }
 
     companion object {
-        const val TAG = "PaymentCompletionService"
+        var lastRequestTime: Instant? = null
+        val bufferDuration: Duration = Duration.ofSeconds(5L)
+        const val TAG = "PAYWITHCLERCAPP: PaymentCompletionService"
     }
 
 }

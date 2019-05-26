@@ -73,7 +73,7 @@ class LaunchActivity : AppCompatActivity() {
 
     companion object {
 
-        const val TAG = "LaunchActivity"
+        const val TAG = "PAYWITHCLERCAPP: LaunchActivity"
 
     }
 

@@ -3,6 +3,7 @@ package com.paywithclerc.paywithclerc.service
 import android.content.Context
 import android.util.Log
 import androidx.annotation.Size
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -15,7 +16,7 @@ import org.json.JSONObject
 
 object BackendService {
 
-    const val TAG = "BackendService"
+    const val TAG = "PAYWITHCLERCAPP: BackendService"
 
     /**
      * Calls backend to send a receipt to the customer
@@ -182,7 +183,7 @@ object BackendService {
                     "firebase_store_id" to store.id
                 )
                 // POST the request to our backend server
-                val createEphemeralKeyRequest = JsonObjectRequest(Request.Method.POST,
+                val chargeCustomerRequest = JsonObjectRequest(Request.Method.POST,
                     BackendConstants.CHARGE_URL,
                     JSONObject(chargeParams),
                     Response.Listener { response ->
@@ -201,8 +202,10 @@ object BackendService {
                         Log.e(TAG, "Backend network call errored while charging customer")
                         onResult(false, null, Error("${networkError?.message}"))
                     })
+                // Disable retries
+                chargeCustomerRequest.retryPolicy = DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
                 // Add the request to the network queue
-                networkService.addToRequestQueue(createEphemeralKeyRequest, requestTag)
+                networkService.addToRequestQueue(chargeCustomerRequest, requestTag)
 
             } else {
                 // JWT retrieval failed

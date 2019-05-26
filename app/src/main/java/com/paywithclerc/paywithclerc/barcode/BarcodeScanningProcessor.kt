@@ -69,6 +69,6 @@ class BarcodeScanningProcessor(var barcodeDetected: (List<FirebaseVisionBarcode>
     }
 
     companion object {
-        private const val TAG = "BarcodeScanProc"
+        private const val TAG = "PAYWITHCLERCAPP: BarcodeScanProc"
     }
 }

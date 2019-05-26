@@ -244,7 +244,7 @@ class ShoppingActivity : AppCompatActivity() {
 
     companion object {
 
-        const val TAG = "Shopping Activity"
+        const val TAG = "PAYWITHCLERCAPP: Shopping Activity"
 
     }
 
